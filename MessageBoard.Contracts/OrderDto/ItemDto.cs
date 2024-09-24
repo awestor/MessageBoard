@@ -1,9 +1,17 @@
-﻿using MessageBoard.Domain.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MessageBoard.Domain.Entities
+namespace MessageBoard.Contracts.OrderDto
 {
-    public class Item: BaseEntity
+    internal class ItemDto
     {
+        /// <summary>
+        /// Идентефикатор товара
+        /// </summary>
+        public Guid Id { get; set; }
         /// <summary>
         /// Имя товара
         /// </summary>
@@ -19,11 +27,11 @@ namespace MessageBoard.Domain.Entities
         /// <summary>
         /// Коментарий к товару
         /// </summary>
-        public string? Comment { get; set; }
+        public string? Coment { get; set; }
         /// <summary>
         /// Количество товара
         /// </summary>
-        public int Count { get; set; } 
+        public int Count { get; set; }
         /// <summary>
         /// Дата создания
         /// </summary>
@@ -35,6 +43,5 @@ namespace MessageBoard.Domain.Entities
         /// <summary>
         /// Id заказа, за которым закреплён товар
         /// </summary>
-
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MessageBoard.Domain.Entities
 {
-    public class User : BaseEntity
+    public class User:BaseEntity
     {
         /// <summary>
         /// Почта
@@ -21,6 +21,10 @@ namespace MessageBoard.Domain.Entities
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Номер телефона
+        /// </summary>
+        public int PhoneNumber { get; set; }
+        /// <summary>
         /// Описание профиля
         /// </summary>
         public string? Description { get; set; }
@@ -28,9 +32,5 @@ namespace MessageBoard.Domain.Entities
         /// Дата создания профиля
         /// </summary>
         public DateTime CreatedAt { get; set; }
-        /// <summary>
-        /// Номер телефона
-        /// </summary>
-        public int PhoneNumber { get; set; }
     }
 }
