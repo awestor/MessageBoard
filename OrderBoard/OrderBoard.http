@@ -1,0 +1,6 @@
+@OrderBoard_HostAddress = http://localhost:5000
+
+GET {{OrderBoard_HostAddress}}/OrderBoard/
+Accept: application/json
+
+###
