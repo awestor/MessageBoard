@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderBoard.Domain;
 
-namespace OrderBoard.Infrastructure.Configurations
+namespace OrderBoard.DataAccess.Configurations
 {
     public class AdvertConfiguration : IEntityTypeConfiguration<Advert>
     {

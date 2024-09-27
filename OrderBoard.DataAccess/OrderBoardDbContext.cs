@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OrderBoard.Infrastructure.Configurations;
+using OrderBoard.DataAccess.Configurations;
 
 namespace OrderBoard.DataAccess
 {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OrderBoard.Domain;
 
-namespace OrderBoard.Infrastructure.Configurations
+namespace OrderBoard.DataAccess.Configurations
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {

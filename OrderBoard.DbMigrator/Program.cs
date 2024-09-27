@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.DbMigrator;
 
@@ -5,7 +6,7 @@ namespace OrderBoard.DbMigrator
 {
     public class Program
     {
-        public static async void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args).ConfigureServices((HostBuilderContext, services) =>
             {
