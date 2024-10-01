@@ -1,15 +1,26 @@
-﻿namespace OrderBoard.Infrastructure.Repository
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
+namespace OrderBoard.Infrastructure.Repository
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity, TContext> : IRepository <TEntity, TContext> where TEntity : class where TContext : DbContext
     {
+        protected TContext DbContext;
+        protected DbSet<TEntity> DbSet;
+
+        public Repository(TContext dbContext)
+        {
+            DbContext = dbContext;
+            DbSet = DbContext.Set<TEntity>();
+        }
         /// <summary>
         /// Возврат всех элементов
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<TEntity> getAll()
+        IQueryable<TEntity> GetAll()
         {
-            throw new NotImplementedException();
+            return DbSet;
         }
         /// <summary>
         /// Возврат значения по предикату
@@ -17,9 +28,18 @@
         /// <param name="predicate"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<TEntity> getByPredicate(Func<TEntity, bool> predicate)
+        IQueryable<TEntity> GetByPredicate(Func<TEntity, bool> predicate)
         {
             throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Получение по идентификатору
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await DbSet.FindAsync(id, cancellationToken);
         }
         /// <summary>
         /// Добавление элемента
@@ -27,9 +47,10 @@
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<TEntity> Add(TEntity model)
+        public async Task AddAsync(TEntity model, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await DbSet.AddAsync(model, cancellationToken);
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
         /// <summary>
         /// Обноваление элемента
@@ -37,9 +58,10 @@
         /// <param name="model"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<TEntity> Update(TEntity model)
+        public async Task UpdateAsync(TEntity model, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            DbSet.Update(model);
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
         /// <summary>
         /// Удаление элемента
@@ -47,9 +69,22 @@
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IEnumerable<TEntity> Delete(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var entity = await GetByIdAsync(id, cancellationToken);
+            if (entity != null)
+            {
+                DbSet.Remove(entity);
+                await DbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+        IQueryable<TEntity> IRepository<TEntity, TContext>.GetAll()
+        {
+            return DbSet;
+        }
+        IQueryable<TEntity> IRepository<TEntity, TContext>.GetByPredicate(Expression<Func<TEntity, bool>> predicate)
+        {
+            return DbSet.Where(predicate);
         }
     }
 }

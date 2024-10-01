@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.Tests", "OrderBoard.Tests\OrderBoard.Tests.csproj", "{0632DB59-50E7-4813-AE8C-8EB7E8A3363A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderBoard.DbMigrator", "OrderBoard.DbMigrator\OrderBoard.DbMigrator.csproj", "{32F318A7-417D-4D5D-A174-67F84A9AE40C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.DbMigrator", "OrderBoard.DbMigrator\OrderBoard.DbMigrator.csproj", "{32F318A7-417D-4D5D-A174-67F84A9AE40C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
