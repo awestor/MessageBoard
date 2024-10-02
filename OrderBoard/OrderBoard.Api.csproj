@@ -18,6 +18,7 @@
     <ProjectReference Include="..\OrderBoard.AppServices\OrderBoard.AppServices.csproj" />
     <ProjectReference Include="..\OrderBoard.DataAccess\OrderBoard.DataAccess.csproj" />
     <ProjectReference Include="..\OrderBoard.Infrastructure\OrderBoard.Infrastructure.csproj" />
+    <ProjectReference Include="..\src\OrderBoard.ComponentRegistrator\OrderBoard.ComponentRegistrator.csproj" />
   </ItemGroup>
 
 </Project>

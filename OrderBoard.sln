@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.Tests", "OrderBo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.DbMigrator", "OrderBoard.DbMigrator\OrderBoard.DbMigrator.csproj", "{32F318A7-417D-4D5D-A174-67F84A9AE40C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderBoard.ComponentRegistrator", "src\OrderBoard.ComponentRegistrator\OrderBoard.ComponentRegistrator.csproj", "{D709FFF0-504F-401D-B187-66C30E4C94E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{32F318A7-417D-4D5D-A174-67F84A9AE40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32F318A7-417D-4D5D-A174-67F84A9AE40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32F318A7-417D-4D5D-A174-67F84A9AE40C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D709FFF0-504F-401D-B187-66C30E4C94E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D709FFF0-504F-401D-B187-66C30E4C94E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D709FFF0-504F-401D-B187-66C30E4C94E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D709FFF0-504F-401D-B187-66C30E4C94E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{A5184078-52B5-4CCC-BD98-7EBCEF0EBEC5} = {0382A181-4501-4946-8D49-9DC34400691E}
 		{0632DB59-50E7-4813-AE8C-8EB7E8A3363A} = {9D91CB00-6F0F-4E34-A44D-80979FB2F36F}
 		{32F318A7-417D-4D5D-A174-67F84A9AE40C} = {7C3DA1F4-0FED-4AC1-B822-D098AF108B8D}
+		{D709FFF0-504F-401D-B187-66C30E4C94E5} = {0382A181-4501-4946-8D49-9DC34400691E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E335699C-DE66-4A1C-8295-D4C6EE9DF40F}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OrderBoard.Contracts.Categories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace OrderBoard.AppServices.Categories.Services
 {
     public interface ICategoryService
     {
+        Task<Guid> CreateAsync(CategoryCreateModel model, CancellationToken cancellationToken);
+        Task<CategoryInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

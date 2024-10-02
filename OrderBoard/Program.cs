@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using OrderBoard.ComponentRegistrator;
+using OrderBoard.DataAccess;
+
 namespace OrderBoard.Api
 {
     public class Program
@@ -12,6 +16,9 @@ namespace OrderBoard.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddApplicationServices();
+            builder.Services.AddDbContext<OrderBoardDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString")));
 
             var app = builder.Build();
 
