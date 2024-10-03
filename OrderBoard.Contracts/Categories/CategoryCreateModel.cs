@@ -20,10 +20,5 @@ namespace OrderBoard.Contracts.Categories
         /// Описание.
         /// </summary>
         public string? Description { get; set; }
-
-        /// <summary>
-        /// Номер.
-        /// </summary>
-        public string? Number { get; set; }
     }
 }

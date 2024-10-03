@@ -1,11 +1,6 @@
 ﻿using OrderBoard.AppServices.Adverts.Repositories;
-using OrderBoard.Domain;
+using OrderBoard.Domain.Entities;
 using OrderBoard.Infrastructure.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderBoard.DataAccess.Repositories
 {

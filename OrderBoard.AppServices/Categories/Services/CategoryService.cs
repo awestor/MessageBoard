@@ -1,31 +1,24 @@
 ﻿using OrderBoard.AppServices.Categories.Repositories;
 using OrderBoard.Contracts.Categories;
-using OrderBoard.Domain;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
+using OrderBoard.Domain.Entities;
 
 namespace OrderBoard.AppServices.Categories.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public Task<Guid> CreateAsync(CategoryCreateModel model, CancellationToken cancellationToken)
         {
-            var entity = new Category
-            {
-                Name = model.Title,
-                Created = DateTime.UtcNow
-            };
+            var entity = _mapper.Map<CategoryCreateModel, Category>(model);
 
             return _categoryRepository.AddAsync(entity, cancellationToken);
         }

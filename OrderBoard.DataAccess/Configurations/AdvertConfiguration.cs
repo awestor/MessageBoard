@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OrderBoard.Domain;
+
+using OrderBoard.Domain.Entities;
 
 namespace OrderBoard.DataAccess.Configurations
 {

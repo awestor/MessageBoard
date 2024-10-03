@@ -1,6 +1,7 @@
 ﻿namespace OrderBoard.AppServices.User.Services
 {
-    public class IUserService
+    public interface IUserService
     {
+
     }
 }

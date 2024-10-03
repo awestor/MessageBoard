@@ -29,7 +29,19 @@ namespace OrderBoard.ComponentRegistrator
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
+            services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
+
             return services;
+        }
+
+        private static MapperConfiguration GetMapperConfiguration()
+        {
+            var configuration = new MapperConfiguration(configure =>
+            {
+                configure.AddProfile<CategoryProfile>();
+            });
+            configuration.AssertConfigurationIsValid();
+            return configuration;
         }
     }
 }
