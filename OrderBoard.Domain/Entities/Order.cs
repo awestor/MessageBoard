@@ -32,7 +32,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Ссылка на пользователя
         /// </summary>
-        public User User { get; set; }
+        public EntUser User { get; set; }
         /// <summary>
         /// Список заказов
         /// </summary>

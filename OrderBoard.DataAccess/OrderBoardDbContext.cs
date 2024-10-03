@@ -14,6 +14,7 @@ namespace OrderBoard.DataAccess
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AdvertConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

@@ -7,6 +7,8 @@ using OrderBoard.AppServices.Adverts.Services;
 using OrderBoard.AppServices.Categories.Repositories;
 using OrderBoard.AppServices.Categories.Services;
 using OrderBoard.AppServices.User.Services;
+using OrderBoard.AppServices.Users.Repository;
+using OrderBoard.AppServices.Users.Services;
 using OrderBoard.ComponentRegistrator.MapProfiles;
 using OrderBoard.DataAccess.Repositories;
 using OrderBoard.Infrastructure.Repository;
@@ -17,13 +19,11 @@ namespace OrderBoard.ComponentRegistrator
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            //services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAdvertService, AdvertService>();
 
-            //object value = ();
-            //FAKE REPO
-            //services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAdvertRepository, AdvertRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
@@ -39,6 +39,8 @@ namespace OrderBoard.ComponentRegistrator
             var configuration = new MapperConfiguration(configure =>
             {
                 configure.AddProfile<CategoryProfile>();
+                //configure.AddProfile<AdvertProfile>();
+                configure.AddProfile<UserProfile>();
             });
             configuration.AssertConfigurationIsValid();
             return configuration;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using OrderBoard.Contracts.Categories;
-using OrderBoard.Domain;
+using OrderBoard.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

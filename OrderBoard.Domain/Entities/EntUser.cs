@@ -2,7 +2,7 @@
 
 namespace OrderBoard.Domain.Entities
 {
-    public class User:BaseEntity
+    public class EntUser:BaseEntity
     {
         /// <summary>
         /// Почта
@@ -23,7 +23,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Номер телефона
         /// </summary>
-        public int PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         /// <summary>
         /// Описание профиля
         /// </summary>
