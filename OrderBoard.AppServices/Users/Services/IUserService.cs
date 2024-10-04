@@ -1,4 +1,5 @@
-﻿using OrderBoard.Contracts.UserDto;
+﻿using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.UserDto;
 
 namespace OrderBoard.AppServices.User.Services
 {

@@ -15,6 +15,7 @@ namespace OrderBoard.DataAccess
             modelBuilder.ApplyConfiguration(new ItemConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
         }
     }
 }

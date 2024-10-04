@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OrderBoard.Domain.Entities;
 
 namespace OrderBoard.DataAccess.Configurations
 {
     public class ItemConfiguration : IEntityTypeConfiguration<Item>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Item> builder)
+        public void Configure(EntityTypeBuilder<Item> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).HasMaxLength(512).IsRequired();

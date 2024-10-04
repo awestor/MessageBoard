@@ -1,16 +1,9 @@
 ﻿using OrderBoard.Contracts.Enums;
+
 namespace OrderBoard.Contracts.OrderDto
 {
-    internal class OrderDto
+    public class OrderInfoModel
     {
-        /// <summary>
-        /// Идентефикатор заказа
-        /// </summary>
-        public Guid Id { get; set; }
-        /// <summary>
-        /// Описание заказа
-        /// </summary>
-        public string? Description { get; set; }
         /// <summary>
         /// Дата создания заказа
         /// </summary>
@@ -18,7 +11,7 @@ namespace OrderBoard.Contracts.OrderDto
         /// <summary>
         /// Количество заказов
         /// </summary>
-        public int TotalCount { get; set; }
+        public decimal TotalCount { get; set; }
         /// <summary>
         /// Итоговая стоимость заказа
         /// </summary>

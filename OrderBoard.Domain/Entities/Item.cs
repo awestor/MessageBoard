@@ -9,11 +9,11 @@ namespace OrderBoard.Domain.Entities
         /// </summary>
         public string? Name { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Описание товара
         /// </summary>
         public string? Description { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Стоимость товара
         /// </summary>
         public decimal Price { get; set; }
         /// <summary>

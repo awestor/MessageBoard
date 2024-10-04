@@ -33,8 +33,12 @@ namespace OrderBoard.Domain.Entities
         /// </summary>
         public DateTime CreatedAt { get; set; }
         /// <summary>
-        /// Id созданных данным пользователем "item"
+        /// Список созданных данным пользователем "item"
         /// </summary>
         public virtual List<Item>? Items { get; set; }
+        /// <summary>
+        /// Список сорершённых заказов пользователем
+        /// </summary>
+        public virtual List<Order>? History { get; set; }
     }
 }

@@ -10,6 +10,8 @@ using OrderBoard.AppServices.Users.Services;
 using OrderBoard.ComponentRegistrator.MapProfiles;
 using OrderBoard.DataAccess.Repositories;
 using OrderBoard.Infrastructure.Repository;
+using OrderBoard.AppServices.Repository.Services;
+using OrderBoard.AppServices.Repository.Repository;
 
 namespace OrderBoard.ComponentRegistrator
 {
@@ -20,10 +22,12 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IOrderItemService, OrderItemService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
@@ -39,6 +43,7 @@ namespace OrderBoard.ComponentRegistrator
                 configure.AddProfile<CategoryProfile>();
                 configure.AddProfile<ItemProfile>();
                 configure.AddProfile<UserProfile>();
+                configure.AddProfile<OrderItemProfile>();
             });
             configuration.AssertConfigurationIsValid();
             return configuration;

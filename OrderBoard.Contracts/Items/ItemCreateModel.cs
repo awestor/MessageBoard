@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OrderBoard.Contracts.Items
+﻿namespace OrderBoard.Contracts.Items
 {
     public class ItemCreateModel
     {
@@ -17,11 +11,11 @@ namespace OrderBoard.Contracts.Items
         /// </summary>
         public int Count { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Цена товара
         /// </summary>
         public decimal Price { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Описание товара
         /// </summary>
         public string? Description { get; set; }
         /// <summary>

@@ -23,10 +23,10 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество товаров
         /// </summary>
-        public int Count { get; set; }
+        public decimal Count { get; set; }
         /// <summary>
         /// Итоговая цена за отдельный товар
         /// </summary>
-        public decimal OrderPrice { get; set; }
+        public decimal? OrderPrice { get; set; }
     }
 }

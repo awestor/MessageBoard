@@ -6,17 +6,17 @@ namespace OrderBoard.Domain.Entities
     public class Order:BaseEntity
     {
         /// <summary>
-        /// Описание заказа
-        /// </summary>
-        public string? Description {  get; set; }
-        /// <summary>
         /// Дата создания заказа
         /// </summary>
         public DateTime CreatedAt { get; set; }
         /// <summary>
+        /// Дата создания заказа
+        /// </summary>
+        public DateTime PaidAt { get; set; }
+        /// <summary>
         /// Количество заказов
         /// </summary>
-        public int TotalCount { get; set; }
+        public decimal TotalCount { get; set; }
         /// <summary>
         /// Итоговая стоимость заказа
         /// </summary>
@@ -32,10 +32,10 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Ссылка на пользователя
         /// </summary>
-        public EntUser User { get; set; }
+        public EntUser? User { get; set; }
         /// <summary>
         /// Список заказов
         /// </summary>
-        public List<OrderItem> OrderList { get; set; }
+        public List<OrderItem>? OrderList { get; set; }
     }
 }
