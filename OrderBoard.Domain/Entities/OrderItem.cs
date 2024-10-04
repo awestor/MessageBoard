@@ -9,9 +9,17 @@ namespace OrderBoard.Domain.Entities
         /// </summary>
         public Guid ItemId { get; set; }
         /// <summary>
+        /// Сущность товара
+        /// </summary>
+        public Item? Item { get; set; }
+        /// <summary>
         /// Id заказа
         /// </summary>
         public Guid OrderId { get; set; }
+        /// <summary>
+        /// Сущность заказа
+        /// </summary>
+        public Order? Order { get; set; }
         /// <summary>
         /// Количество товаров
         /// </summary>

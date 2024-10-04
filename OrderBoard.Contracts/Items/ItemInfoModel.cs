@@ -1,17 +1,21 @@
-﻿using OrderBoard.Domain.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OrderBoard.Domain.Entities
+namespace OrderBoard.Contracts.Items
 {
-    public class Item: BaseEntity
+    public class ItemInfoModel
     {
         /// <summary>
         /// Имя товара
         /// </summary>
         public string? Name { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Количество товара
         /// </summary>
-        public string? Description { get; set; }
+        public int Count { get; set; }
         /// <summary>
         /// Коментарий к товару
         /// </summary>
@@ -19,11 +23,11 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Коментарий к товару
         /// </summary>
-        public string? Comment { get; set; }
+        public string? Description { get; set; }
         /// <summary>
-        /// Количество товара
+        /// Коментарий к товару
         /// </summary>
-        public int Count { get; set; } 
+        public string? Comment { get; set; }
         /// <summary>
         /// Дата создания
         /// </summary>
@@ -33,20 +37,8 @@ namespace OrderBoard.Domain.Entities
         /// </summary>
         public Guid CategoryId { get; set; }
         /// <summary>
-        /// Категория за которой закреплён товар
-        /// </summary>
-        public Category? Category { get; set; }
-        /// <summary>
         /// Id пользователя что создал его
         /// </summary>
         public Guid UserId { get; set; }
-        /// <summary>
-        /// Пользователь за которым закреплён товар
-        /// </summary>
-        public EntUser? User { get; set; }
-        /// <summary>
-        /// Id заказа, за которым закреплён товар
-        /// </summary>
-        public virtual List<OrderItem>? OrderItem { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace OrderBoard.DataAccess.Configurations
             builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(4096).IsRequired();
 
-            builder.HasMany(x => x.Adverts).WithOne(x => x.Category).HasForeignKey(x => x.CategoryId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.Items).WithOne(x => x.Category).HasForeignKey(x => x.CategoryId).IsRequired().OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

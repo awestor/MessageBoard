@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
-using OrderBoard.AppServices.Adverts.Repositories;
-using OrderBoard.AppServices.Adverts.Services;
+using OrderBoard.AppServices.Items.Repositories;
+using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.Categories.Repositories;
 using OrderBoard.AppServices.Categories.Services;
 using OrderBoard.AppServices.User.Services;
@@ -21,10 +19,10 @@ namespace OrderBoard.ComponentRegistrator
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IAdvertService, AdvertService>();
+            services.AddScoped<IItemService, ItemService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAdvertRepository, AdvertRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -39,7 +37,7 @@ namespace OrderBoard.ComponentRegistrator
             var configuration = new MapperConfiguration(configure =>
             {
                 configure.AddProfile<CategoryProfile>();
-                //configure.AddProfile<AdvertProfile>();
+                configure.AddProfile<ItemProfile>();
                 configure.AddProfile<UserProfile>();
             });
             configuration.AssertConfigurationIsValid();

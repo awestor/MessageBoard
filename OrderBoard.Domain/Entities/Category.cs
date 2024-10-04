@@ -8,6 +8,9 @@ namespace OrderBoard.Domain.Entities
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime Created { get; set; }
-        public virtual List<Advert>? Adverts { get; set; }
+        /// <summary>
+        /// Id хранимых в данной категории "item"
+        /// </summary>
+        public virtual List<Item>? Items { get; set; }
     }
 }

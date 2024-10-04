@@ -7,23 +7,23 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Почта
         /// </summary>
-        public string Email { get; set; }
+        public string? Email { get; set; }
         /// <summary>
         /// Логин профиля
         /// </summary>
-        public string Login { get; set; }
+        public string? Login { get; set; }
         /// <summary>
         /// Пароль
         /// </summary>
-        public string Password { get; set; }
+        public string? Password { get; set; }
         /// <summary>
         /// имя пользователя
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Номер телефона
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         /// <summary>
         /// Описание профиля
         /// </summary>
@@ -32,5 +32,9 @@ namespace OrderBoard.Domain.Entities
         /// Дата создания профиля
         /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// Id созданных данным пользователем "item"
+        /// </summary>
+        public virtual List<Item>? Items { get; set; }
     }
 }
