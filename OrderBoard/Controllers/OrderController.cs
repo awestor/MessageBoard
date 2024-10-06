@@ -29,13 +29,5 @@ namespace OrderBoard.Api.Controllers
             var result = await _orderService.GetByIdAsync(id, cancellationToken);
             return Ok(result);
         }
-
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var result = await _orderService.GetForUpdateAsync(id, cancellationToken);
-            return Ok(result);
-        }
     }
 }

@@ -10,6 +10,8 @@ namespace OrderBoard.DataAccess.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.UserId).IsRequired();
+
+            builder.HasMany(x => x.OrderList).WithOne(x => x.Order).HasForeignKey(x => x.Order).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

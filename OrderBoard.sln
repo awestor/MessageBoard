@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.Tests", "OrderBo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.DbMigrator", "OrderBoard.DbMigrator\OrderBoard.DbMigrator.csproj", "{32F318A7-417D-4D5D-A174-67F84A9AE40C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderBoard.ComponentRegistrator", "src\OrderBoard.ComponentRegistrator\OrderBoard.ComponentRegistrator.csproj", "{D709FFF0-504F-401D-B187-66C30E4C94E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderBoard.ComponentRegistrator", "src\OrderBoard.ComponentRegistrator\OrderBoard.ComponentRegistrator.csproj", "{D709FFF0-504F-401D-B187-66C30E4C94E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

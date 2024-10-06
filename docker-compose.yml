@@ -1,0 +1,6 @@
+services:
+  orderboard.dbmigrator:
+    image: ${DOCKER_REGISTRY-}orderboarddbmigrator
+    build:
+      context: .
+      dockerfile: OrderBoard.DbMigrator/Dockerfile

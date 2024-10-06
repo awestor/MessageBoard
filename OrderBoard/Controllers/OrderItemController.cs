@@ -32,7 +32,7 @@ namespace OrderBoard.Api.Controllers
             OrderTempModel.TotalCount += model.Count;
             OrderTempModel.TotalPrice += model.Count * ItemTempModel.Price;
 
-            return StatusCode((int)HttpStatusCode.Created, result);
+            return StatusCode((int)HttpStatusCode.Created, OrderTempModel);
         }
 
         [HttpGet("{id:guid}")]

@@ -7,6 +7,10 @@ namespace OrderBoard.Contracts.Orders
         /// <summary>
         /// Дата создания заказа
         /// </summary>
+        public DateTime PaidAt { get; set; }
+        /// <summary>
+        /// Дата создания заказа
+        /// </summary>
         public DateTime CreatedAt { get; set; }
         /// <summary>
         /// Количество заказов
