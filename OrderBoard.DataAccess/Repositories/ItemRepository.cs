@@ -31,5 +31,11 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+        public Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.Id == id)
+                .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

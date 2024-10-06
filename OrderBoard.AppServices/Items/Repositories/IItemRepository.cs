@@ -8,5 +8,6 @@ namespace OrderBoard.AppServices.Items.Repositories
     {
         Task<Guid> AddAsync(Item model, CancellationToken cancellationToken);
         Task<ItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
     }
 }

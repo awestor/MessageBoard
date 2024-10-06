@@ -28,5 +28,10 @@ namespace OrderBoard.AppServices.Items.Services
         {
             return _itemRepository.GetByIdAsync(id, cancellationToken);
         }
+
+        public Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _itemRepository.GetForUpdateAsync(id, cancellationToken);
+        }
     }
 }

@@ -12,6 +12,8 @@ using OrderBoard.DataAccess.Repositories;
 using OrderBoard.Infrastructure.Repository;
 using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.AppServices.Repository.Repository;
+using OrderBoard.AppServices.Orders.Services;
+using OrderBoard.AppServices.Orders.Repository;
 
 namespace OrderBoard.ComponentRegistrator
 {
@@ -23,7 +25,10 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<IOrderService, OrderService>();
 
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -40,6 +45,7 @@ namespace OrderBoard.ComponentRegistrator
         {
             var configuration = new MapperConfiguration(configure =>
             {
+                configure.AddProfile<OrderProfile>();
                 configure.AddProfile<CategoryProfile>();
                 configure.AddProfile<ItemProfile>();
                 configure.AddProfile<UserProfile>();

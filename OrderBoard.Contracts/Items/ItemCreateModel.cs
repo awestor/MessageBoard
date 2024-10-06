@@ -9,7 +9,7 @@
         /// <summary>
         /// Количество товара
         /// </summary>
-        public int Count { get; set; }
+        public decimal Count { get; set; }
         /// <summary>
         /// Цена товара
         /// </summary>

@@ -23,7 +23,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество товара
         /// </summary>
-        public int Count { get; set; } 
+        public decimal Count { get; set; } 
         /// <summary>
         /// Дата создания
         /// </summary>

@@ -16,8 +16,4 @@
     <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Orders\" />
-  </ItemGroup>
-
 </Project>

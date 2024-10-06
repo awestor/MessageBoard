@@ -1,6 +1,6 @@
 ﻿using OrderBoard.Contracts.Enums;
 
-namespace OrderBoard.Contracts.OrderDto
+namespace OrderBoard.Contracts.Orders
 {
     public class OrderInfoModel
     {

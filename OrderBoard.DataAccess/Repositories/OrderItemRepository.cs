@@ -2,16 +2,9 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.AppServices.Repository.Repository;
-using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.OrderItem;
-using OrderBoard.Contracts.UserDto;
 using OrderBoard.Domain.Entities;
 using OrderBoard.Infrastructure.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderBoard.DataAccess.Repositories
 {
