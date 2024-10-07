@@ -10,6 +10,10 @@ namespace OrderBoard.Contracts.Orders
     public class OrderDataModel
     {
         /// <summary>
+        /// Идентефикатор заказа
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
         /// Дата создания заказа
         /// </summary>
         public DateTime CreatedAt { get; set; }

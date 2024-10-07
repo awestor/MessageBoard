@@ -7,5 +7,6 @@ namespace OrderBoard.AppServices.Orders.Services
         Task<Guid> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken);
         Task<OrderInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<OrderDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
+        Task<Guid> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken);
     }
 }

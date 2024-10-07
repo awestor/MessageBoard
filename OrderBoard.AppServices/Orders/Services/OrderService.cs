@@ -33,5 +33,10 @@ namespace OrderBoard.AppServices.Orders.Services
         {
             return _orderRepository.GetForUpdateAsync(id, cancellationToken);
         }
+        public Task<Guid> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<OrderDataModel, Order>(model);
+            return _orderRepository.UpdateAsync(entity, cancellationToken);
+        }
     }
 }

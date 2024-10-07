@@ -11,6 +11,10 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
             CreateMap<Order, OrderDataModel>()
                 .ForMember(s => s.TotalPrice, map => map.MapFrom(s => s.TotalPrice))
                 .ForMember(s => s.TotalCount, map => map.MapFrom(s => s.TotalCount));
+            CreateMap<OrderDataModel, Order>(MemberList.None)
+                .ForMember(s => s.Id, map => map.MapFrom(s => s.Id))
+                .ForMember(s => s.TotalPrice, map => map.MapFrom(s => s.TotalPrice))
+                .ForMember(s => s.TotalCount, map => map.MapFrom(s => s.TotalCount));
 
             CreateMap<Order, OrderInfoModel>()
                 .ForMember(s => s.UserId, map => map.MapFrom(s => s.UserId));
@@ -18,8 +22,7 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
 
             CreateMap<OrderCreateModel, Order>(MemberList.None)
                 .ForMember(s => s.UserId, map => map.MapFrom(s => s.UserId))
-                .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow))
-                .ForMember(s => s.PaidAt, map => map.MapFrom(s => DateTime.UtcNow));
+                .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
         }
     }
 }

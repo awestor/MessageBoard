@@ -31,6 +31,8 @@ namespace OrderBoard.Api.Controllers
             var ItemTempModel = await _itemService.GetForUpdateAsync(model.ItemId, cancellationToken);
             OrderTempModel.TotalCount += model.Count;
             OrderTempModel.TotalPrice += model.Count * ItemTempModel.Price;
+            OrderTempModel.OrderStatus = Contracts.Enums.OrderStatus.Draft;
+            await _orderService.UpdateAsync(OrderTempModel, cancellationToken);
 
             return StatusCode((int)HttpStatusCode.Created, OrderTempModel);
         }
