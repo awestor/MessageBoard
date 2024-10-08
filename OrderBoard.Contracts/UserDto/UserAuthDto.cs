@@ -1,6 +1,6 @@
 ﻿namespace OrderBoard.Contracts.UserDto
 {
-    internal class UserAuthDto
+    public class UserAuthDto
     {
         /// <summary>
         /// Логин профиля
@@ -13,7 +13,7 @@
         /// <summary>
         /// Пароль
         /// </summary>
-        public string? Password { get; set; }
+        public required string? Password { get; set; }
         
     }
 }

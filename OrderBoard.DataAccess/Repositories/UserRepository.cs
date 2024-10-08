@@ -34,6 +34,13 @@ namespace OrderBoard.DataAccess.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
+        public Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string login, string email, string password, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => (s.Login == login && s.Password == password) || (s.Email == email && s.Password == password))
+                .ProjectTo<UserDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public Task<UserDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)

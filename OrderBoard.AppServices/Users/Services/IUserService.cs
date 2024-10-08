@@ -11,6 +11,8 @@ namespace OrderBoard.AppServices.User.Services
         Task<Guid> UpdateAsync(UserDataModel model, CancellationToken cancellationToken);
         Task<UserDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
         Task<Guid> SetRoleAsync(Guid id, UserRole role, CancellationToken cancellationToken);
-
+        Task<String> LoginAsync(UserAuthDto model, CancellationToken cancellationToken);
+        Task<UserInfoModel> GetCurrentUserAsync(CancellationToken cancellationToken);
+        Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string Login, string Email, string Password, CancellationToken cancellationToken);
     }
 }

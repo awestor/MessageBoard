@@ -17,7 +17,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CategoryCreateModel model, CancellationToken cancellationToken )
+        public async Task<IActionResult> Post([FromBody] CategoryCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _categoryService.CreateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);

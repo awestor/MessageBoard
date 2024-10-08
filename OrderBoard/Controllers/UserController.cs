@@ -44,5 +44,20 @@ namespace OrderBoard.Api.Controllers
             var result = await _userService.SetRoleAsync(id, role, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
+
+        [HttpPost("Login")]
+        [ProducesResponseType(typeof(UserAuthDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login([FromBody] UserAuthDto model, CancellationToken cancellationToken)
+        {
+            var result = await _userService.LoginAsync(model, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK, result);
+        }
+
+        [HttpPost("GetUserInfo")]
+        public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
+        {
+            var result = await _userService.GetCurrentUserAsync(cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK, result);
+        }
     }
 }
