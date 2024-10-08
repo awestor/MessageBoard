@@ -28,5 +28,9 @@ namespace OrderBoard.AppServices.Users.Services
         {
             return _orderItemRepository.GetByIdAsync(id, cancellationToken);
         }
+        public Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _orderItemRepository.GetAllByOrderIdAsync(id, cancellationToken);
+        }
     }
 }

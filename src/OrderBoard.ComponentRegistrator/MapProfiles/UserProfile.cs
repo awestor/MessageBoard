@@ -19,6 +19,9 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.Login, map => map.MapFrom(s => s.Login))
                 .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow))
                 .ForMember(s => s.Password, map => map.MapFrom(s => s.Password));
+
+            CreateMap<UserDataModel, EntUser>(MemberList.None);
+            CreateMap<EntUser, UserDataModel>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OrderBoard.Contracts.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.UserDto
 {
-    public class UserCreateModel
+    public class UserDataModel
     {
+        /// <summary>
+        /// Идентефикатор пользователя
+        /// </summary>
+        public Guid Id { get; set; }
         /// <summary>
         /// Почта
         /// </summary>
@@ -19,7 +24,7 @@ namespace OrderBoard.Contracts.UserDto
         /// <summary>
         /// Пароль
         /// </summary>
-        public string? Password { get; set; } 
+        public string? Password { get; set; }
         /// <summary>
         /// имя пользователя
         /// </summary>
@@ -32,5 +37,13 @@ namespace OrderBoard.Contracts.UserDto
         /// Описание профиля
         /// </summary>
         public string? Description { get; set; }
+        /// <summary>
+        /// Дата создания профиля
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// Уровень прав доступа
+        /// </summary>
+        public UserRole Role { get; set; }
     }
 }

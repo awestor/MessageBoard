@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using OrderBoard.AppServices.Items.Repositories;
+using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
 
 
@@ -32,6 +34,11 @@ namespace OrderBoard.AppServices.Items.Services
         public Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
         {
             return _itemRepository.GetForUpdateAsync(id, cancellationToken);
+        }
+        public Task<Guid> UpdateAsync(ItemDataModel model, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<ItemDataModel, Item>(model);
+            return _itemRepository.UpdateAsync(entity, cancellationToken);
         }
     }
 }

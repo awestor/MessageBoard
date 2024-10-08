@@ -1,4 +1,5 @@
-﻿using OrderBoard.Domain.Base;
+﻿using OrderBoard.Contracts.Enums;
+using OrderBoard.Domain.Base;
 
 namespace OrderBoard.Domain.Entities
 {
@@ -32,6 +33,10 @@ namespace OrderBoard.Domain.Entities
         /// Дата создания профиля
         /// </summary>
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// Уровень прав доступа
+        /// </summary>
+        public UserRole Role { get; set; } = UserRole.Authorized;
         /// <summary>
         /// Список созданных данным пользователем "item"
         /// </summary>

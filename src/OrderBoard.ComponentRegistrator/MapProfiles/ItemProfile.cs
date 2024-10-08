@@ -27,7 +27,10 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.CategoryId, map => map.MapFrom(s => s.CategoryId))
                 .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-            CreateMap<Item, ItemDataModel>();
+            CreateMap<Item, ItemDataModel>()
+                .ForMember(s => s.Id, map => map.MapFrom(s => s.Id));
+            CreateMap<ItemDataModel, Item>(MemberList.None)
+                .ForMember(s => s.Id, map => map.MapFrom(s => s.Id));
         }
     }
 }

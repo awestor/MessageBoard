@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Categories.Services;
 using OrderBoard.Contracts.Categories;
 using System.Net;

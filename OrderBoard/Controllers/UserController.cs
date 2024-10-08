@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderBoard.Contracts.UserDto;
 using System.Net;
+using OrderBoard.Contracts.Enums;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -29,6 +30,19 @@ namespace OrderBoard.Api.Controllers
         {
             var result = await _userService.GetByIdAsync(id, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost("Change user role in DB")]
+        public async Task<IActionResult> SetRole(Guid id, string setRole, CancellationToken cancellationToken)
+        { 
+            UserRole role;
+            if (setRole == "Admin")
+            {
+                role = UserRole.Admin;
+            }
+            else { role = UserRole.Authorized; }
+            var result = await _userService.SetRoleAsync(id, role, cancellationToken);
+            return StatusCode((int)HttpStatusCode.Created, result);
         }
     }
 }

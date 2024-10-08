@@ -9,6 +9,10 @@ namespace OrderBoard.Contracts.Items
     public class ItemDataModel
     {
         /// <summary>
+        /// Идентефикатор товара
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
         /// Имя товара
         /// </summary>
         public string? Name { get; set; }
@@ -37,7 +41,7 @@ namespace OrderBoard.Contracts.Items
         /// </summary>
         public Guid CategoryId { get; set; }
         /// <summary>
-        /// Id пользователя что создал его
+        /// Категория за которой закреплён товар
         /// </summary>
         public Guid UserId { get; set; }
     }

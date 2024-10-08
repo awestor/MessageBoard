@@ -37,5 +37,10 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+        public async Task<Guid> UpdateAsync(Item model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return model.Id;
+        }
     }
 }
