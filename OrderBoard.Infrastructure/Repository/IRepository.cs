@@ -39,6 +39,6 @@ namespace OrderBoard.Infrastructure.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(TEntity model, CancellationToken cancellationToken);
     }
 }

@@ -32,6 +32,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Guid> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
         /// <summary>
         /// Подтверждение заказа
         /// </summary>

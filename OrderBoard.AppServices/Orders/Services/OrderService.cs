@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
@@ -58,6 +60,13 @@ namespace OrderBoard.AppServices.Orders.Services
         {
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             return _orderRepository.UpdateAsync(entity, cancellationToken);
+        }
+        public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
+            var entity = _mapper.Map<OrderDataModel, Order>(model);
+            _orderRepository.DeleteByIdAsync(entity, cancellationToken);
+            return;
         }
         /// <summary>
         /// Подтверждение статуса заказа

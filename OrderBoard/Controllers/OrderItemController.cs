@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Repository.Services;
-using OrderBoard.AppServices.Users.Services;
 using OrderBoard.Contracts.OrderItem;
 using System.Net;
 
@@ -13,6 +12,7 @@ namespace OrderBoard.Api.Controllers
      /// </summary>
      /// <param name="categoryService">Сервис по работе с полями заказа.</param>
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class OrderItemController : ControllerBase
     {
@@ -77,6 +77,30 @@ namespace OrderBoard.Api.Controllers
         {
             var result = await _orderItemService.GetAllByOrderIdAsync(id, cancellationToken);
             return Ok(result);
+        }
+        /// <summary>
+        /// Удаление поля заказа
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns> id подтверждённого заказа</returns>
+        [HttpGet("Delete orderItem's by orderItemId")]
+        public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var OrderItemTempmodel = await _orderItemService.GetByIdAsync(id, cancellationToken);
+            if(OrderItemTempmodel != null) {
+                var ItemTempModel = await _itemService.GetForUpdateAsync(OrderItemTempmodel.ItemId, cancellationToken);
+                var OrderTempModel = await _orderService.GetForUpdateAsync(OrderItemTempmodel.OrderId, cancellationToken);
+
+                OrderTempModel.TotalCount -= OrderItemTempmodel.Count;
+                OrderTempModel.TotalPrice -= OrderItemTempmodel.Count * ItemTempModel.Price;
+                await _orderService.UpdateAsync(OrderTempModel, cancellationToken);
+                ItemTempModel.Count += OrderItemTempmodel.Count;
+                await _itemService.UpdateAsync(ItemTempModel, cancellationToken);
+                await _orderItemService.DeleteAsync(id, cancellationToken);
+                return StatusCode((int)HttpStatusCode.OK);
+            }
+            return StatusCode((int)HttpStatusCode.BadRequest);
         }
     }
 }

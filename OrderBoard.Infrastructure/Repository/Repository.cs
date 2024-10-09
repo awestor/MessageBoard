@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OrderBoard.Domain.Entities;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -71,12 +72,11 @@ namespace OrderBoard.Infrastructure.Repository
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(TEntity model, CancellationToken cancellationToken)
         {
-            var entity = await GetByIdAsync(id, cancellationToken);
-            if (entity != null)
+            if (model != null)
             {
-                DbSet.Remove(entity);
+                DbSet.Remove(model);
                 await DbContext.SaveChangesAsync(cancellationToken);
             }
         }

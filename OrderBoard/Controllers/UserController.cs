@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderBoard.Contracts.UserDto;
 using System.Net;
 using OrderBoard.Contracts.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -33,6 +34,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost("Change user role in DB")]
+        [Authorize]
         public async Task<IActionResult> SetRole(Guid id, string setRole, CancellationToken cancellationToken)
         { 
             UserRole role;
@@ -54,6 +56,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost("GetUserInfo")]
+        [Authorize]
         public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
         {
             var result = await _userService.GetCurrentUserAsync(cancellationToken);

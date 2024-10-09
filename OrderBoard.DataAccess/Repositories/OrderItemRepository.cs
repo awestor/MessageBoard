@@ -3,9 +3,9 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.Contracts.OrderItem;
+using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
 using OrderBoard.Infrastructure.Repository;
-using System.Collections.Generic;
 
 namespace OrderBoard.DataAccess.Repositories
 {
@@ -46,6 +46,22 @@ namespace OrderBoard.DataAccess.Repositories
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<OrderItemInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
+        }
+        public Task<OrderItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.Id == id)
+                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+        public async Task<Guid> UpdateAsync(OrderItem model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return model.Id;
+        }
+        public async Task DeleteByIdAsync(OrderItem model, CancellationToken cancellationToken)
+        {
+            var result = _repository.DeleteAsync(model, cancellationToken);
+            return;
         }
     }
 }

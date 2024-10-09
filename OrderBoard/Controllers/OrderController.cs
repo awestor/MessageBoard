@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.Contracts.Orders;
 using System.Net;
@@ -10,6 +11,7 @@ namespace OrderBoard.Api.Controllers
     /// </summary>
     /// <param name="categoryService">Сервис по работе с заказами.</param>
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class OrderController : ControllerBase
     {

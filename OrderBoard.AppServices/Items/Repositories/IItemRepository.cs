@@ -11,5 +11,6 @@ namespace OrderBoard.AppServices.Items.Repositories
         Task<ItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
         Task<Guid> UpdateAsync(Item model, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Item model, CancellationToken cancellationToken);
     }
 }

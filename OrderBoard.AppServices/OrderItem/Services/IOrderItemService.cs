@@ -1,4 +1,5 @@
-﻿using OrderBoard.Contracts.OrderItem;
+﻿using Microsoft.AspNetCore.Http;
+using OrderBoard.Contracts.OrderItem;
 
 namespace OrderBoard.AppServices.Repository.Services
 {
@@ -13,5 +14,7 @@ namespace OrderBoard.AppServices.Repository.Services
         Task<Guid> CreateAsync(OrderItemCreateModel model, CancellationToken cancellationToken);
         Task<OrderItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

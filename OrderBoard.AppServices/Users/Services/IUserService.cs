@@ -9,6 +9,7 @@ namespace OrderBoard.AppServices.User.Services
         Task<Guid> CreateAsync(UserCreateModel model, CancellationToken cancellationToken);
         Task<UserInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Guid> UpdateAsync(UserDataModel model, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<UserDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
         Task<Guid> SetRoleAsync(Guid id, UserRole role, CancellationToken cancellationToken);
         Task<String> LoginAsync(UserAuthDto model, CancellationToken cancellationToken);

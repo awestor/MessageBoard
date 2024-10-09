@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.User.Services;
 using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Enums;
+using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.Domain.Entities;
 using System.Data;
@@ -54,6 +56,13 @@ namespace OrderBoard.AppServices.Users.Services
         {
             var entity = _mapper.Map<UserDataModel, EntUser>(model);
             return _userRepository.UpdateAsync(entity, cancellationToken);
+        }
+        public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var model = await _userRepository.GetForUpdateAsync(id, cancellationToken);
+            var entity = _mapper.Map<UserDataModel, EntUser>(model);
+            _userRepository.DeleteByIdAsync(entity, cancellationToken);
+            return;
         }
         public async Task<Guid> SetRoleAsync(Guid id, UserRole role, CancellationToken cancellationToken)
         {

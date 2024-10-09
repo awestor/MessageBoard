@@ -18,6 +18,11 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.ItemId, map => map.MapFrom(s => s.ItemId))
                 .ForMember(s => s.Count, map => map.MapFrom(s => s.Count))
                 .ForMember(s => s.OrderId, map => map.MapFrom(s => s.OrderId));
+
+
+            CreateMap<OrderItemDataModel, OrderItem>(MemberList.None)
+                .ForMember(s => s.Id, map => map.MapFrom(s => s.Id));
+            CreateMap<OrderItem, OrderItemDataModel>();
         }
     }
 }

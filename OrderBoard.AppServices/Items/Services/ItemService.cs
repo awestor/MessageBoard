@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
 
@@ -39,6 +41,13 @@ namespace OrderBoard.AppServices.Items.Services
         {
             var entity = _mapper.Map<ItemDataModel, Item>(model);
             return _itemRepository.UpdateAsync(entity, cancellationToken);
+        }
+        public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var model = await _itemRepository.GetForUpdateAsync(id, cancellationToken);
+            var entity = _mapper.Map<ItemDataModel, Item>(model);
+            _itemRepository.DeleteByIdAsync(entity, cancellationToken);
+            return;
         }
     }
 }
