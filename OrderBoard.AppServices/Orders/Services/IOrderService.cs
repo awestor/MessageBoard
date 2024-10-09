@@ -11,6 +11,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Guid> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken);
+        Task<Guid> CreateByAuthAsync(CancellationToken cancellationToken);
         /// <summary>
         /// Получение по id
         /// </summary>

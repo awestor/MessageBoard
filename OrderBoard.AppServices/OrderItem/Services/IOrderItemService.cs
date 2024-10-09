@@ -15,6 +15,5 @@ namespace OrderBoard.AppServices.Repository.Services
         Task<OrderItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken);
         Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
     }
 }

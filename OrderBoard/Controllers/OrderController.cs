@@ -32,6 +32,12 @@ namespace OrderBoard.Api.Controllers
             var result = await _orderService.CreateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
+        [HttpPost("Create New Order if you auth")]
+        public async Task<IActionResult> AuthCreate(CancellationToken cancellationToken)
+        {
+            var result = await _orderService.CreateByAuthAsync(cancellationToken);
+            return StatusCode((int)HttpStatusCode.Created, result);
+        }
         /// <summary>
         /// Получение заказа по id
         /// </summary>

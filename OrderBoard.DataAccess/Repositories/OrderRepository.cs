@@ -37,6 +37,12 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<OrderDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+        public Task<OrderDataModel> GetByUserIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => (s.UserId == id) && (s.OrderStatus != Contracts.Enums.OrderStatus.Ordered))
+                .ProjectTo<OrderDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
         public async Task<Guid> UpdateAsync(Order model, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(model, cancellationToken);

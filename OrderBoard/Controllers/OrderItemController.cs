@@ -87,17 +87,17 @@ namespace OrderBoard.Api.Controllers
         [HttpGet("Delete orderItem's by orderItemId")]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            var OrderItemTempmodel = await _orderItemService.GetByIdAsync(id, cancellationToken);
-            if(OrderItemTempmodel != null) {
-                var ItemTempModel = await _itemService.GetForUpdateAsync(OrderItemTempmodel.ItemId, cancellationToken);
-                var OrderTempModel = await _orderService.GetForUpdateAsync(OrderItemTempmodel.OrderId, cancellationToken);
+            var OrderItemTempModel = await _orderItemService.GetByIdAsync(id, cancellationToken);
+            if(OrderItemTempModel != null) {
+                var ItemTempModel = await _itemService.GetForUpdateAsync(OrderItemTempModel.ItemId, cancellationToken);
+                var OrderTempModel = await _orderService.GetForUpdateAsync(OrderItemTempModel.OrderId, cancellationToken);
 
-                OrderTempModel.TotalCount -= OrderItemTempmodel.Count;
-                OrderTempModel.TotalPrice -= OrderItemTempmodel.Count * ItemTempModel.Price;
+                OrderTempModel.TotalCount -= OrderItemTempModel.Count;
+                OrderTempModel.TotalPrice -= OrderItemTempModel.Count * ItemTempModel.Price;
                 await _orderService.UpdateAsync(OrderTempModel, cancellationToken);
-                ItemTempModel.Count += OrderItemTempmodel.Count;
+                ItemTempModel.Count += OrderItemTempModel.Count;
                 await _itemService.UpdateAsync(ItemTempModel, cancellationToken);
-                await _orderItemService.DeleteAsync(id, cancellationToken);
+                await _orderItemService.DeleteByIdAsync(id, cancellationToken);
                 return StatusCode((int)HttpStatusCode.OK);
             }
             return StatusCode((int)HttpStatusCode.BadRequest);
