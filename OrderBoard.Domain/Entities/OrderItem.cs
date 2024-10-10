@@ -27,6 +27,6 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Итоговая цена за отдельный товар
         /// </summary>
-        public decimal? OrderPrice { get; set; }
+        public decimal OrderPrice { get; set; }
     }
 }

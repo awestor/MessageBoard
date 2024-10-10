@@ -40,6 +40,21 @@ namespace OrderBoard.DataAccess.Repositories
             
             return tempOrderItemList;
         }
+        public async Task<List<OrderItemDataModel>> GetAllByOrderIdInDataModelAsync(Guid id, CancellationToken cancellationToken)
+        {
+            List<OrderItemDataModel> tempOrderItemList = new List<OrderItemDataModel>();
+            int i = 0;
+            while (true)
+            {
+                var temp = await _repository.GetAll().Where(s => s.OrderId == id)
+                    .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                    .Skip(i).FirstOrDefaultAsync(cancellationToken);
+                if (temp != null) { tempOrderItemList.Add(temp); i++; }
+                else break;
+            }
+
+            return tempOrderItemList;
+        }
 
         public Task<OrderItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
@@ -58,7 +73,7 @@ namespace OrderBoard.DataAccess.Repositories
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteByIdAsync(OrderItem model, CancellationToken cancellationToken)
+        public async Task DeleteByModelAsync(OrderItem model, CancellationToken cancellationToken)
         {
             var result = _repository.DeleteAsync(model, cancellationToken);
             return;
