@@ -9,6 +9,7 @@ using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Domain.Entities;
 using System.Net;
+using System.Threading;
 
 namespace OrderBoard.AppServices.Users.Services
 {
@@ -29,7 +30,7 @@ namespace OrderBoard.AppServices.Users.Services
         }
 
         public async Task<Guid> CreateAsync(OrderItemCreateModel model, CancellationToken cancellationToken)
-        {
+        {   
             var ItemTempModel = await _itemService.GetForUpdateAsync(model.ItemId, cancellationToken);
             if (ItemTempModel.Count >= model.Count)
             {
@@ -42,9 +43,20 @@ namespace OrderBoard.AppServices.Users.Services
 
                 await SetCountAsync(ItemTempModel, model.Count, false, cancellationToken);
 
-                var entity = _mapper.Map<OrderItemCreateModel, OrderItem>(model);
-                entity.OrderPrice = model.Count * ItemTempModel.Price;
-                return await _orderItemRepository.AddAsync(entity, cancellationToken);
+                var modelTwo = await GetForAddAsync(model.ItemId, model.OrderId, cancellationToken);
+                if (modelTwo == null)
+                {
+                    var entity = _mapper.Map<OrderItemCreateModel, OrderItem>(model);
+                    entity.OrderPrice = model.Count * ItemTempModel.Price;
+                    return await _orderItemRepository.AddAsync(entity, cancellationToken);
+                }
+                else
+                {
+                    modelTwo.Count += model.Count;
+                    modelTwo.OrderPrice += model.Count * ItemTempModel.Price;
+                    var entity = _mapper.Map<OrderItemDataModel, OrderItem>(modelTwo);
+                    return await _orderItemRepository.UpdateAsync(entity, cancellationToken);
+                }
             }
             throw new Exception("При попытке зарезервировать товары произошла ошибка!");          
         }
@@ -66,6 +78,11 @@ namespace OrderBoard.AppServices.Users.Services
         {
             return _orderItemRepository.GetForUpdateAsync(id, cancellationToken);
         }
+        public Task<OrderItemDataModel> GetForAddAsync(Guid ItemId, Guid OrderId, CancellationToken cancellationToken)
+        {
+            return _orderItemRepository.GetForAddAsync(ItemId, OrderId, cancellationToken);
+        }
+        
         public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var OrderItemTempModel = await _orderItemRepository.GetForUpdateAsync(id, cancellationToken);
@@ -82,7 +99,8 @@ namespace OrderBoard.AppServices.Users.Services
 
                 await SetCountAsync(ItemTempModel, OrderItemTempModel.Count, true, cancellationToken);
 
-                await _orderItemRepository.DeleteByModelAsync(OrderItemTempModel, cancellationToken);
+                var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
+                await _orderItemRepository.DeleteByModelAsync(entity, cancellationToken);
                 return;
             }
             throw new Exception("Указанного поля заказа не существует или он был уже удалён!");
@@ -92,7 +110,8 @@ namespace OrderBoard.AppServices.Users.Services
         {
             if (OrderItemTempModel != null)
             {
-                await _orderItemRepository.DeleteByModelAsync(OrderItemTempModel, cancellationToken);
+                var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
+                await _orderItemRepository.DeleteByModelAsync(entity, cancellationToken);
             }
             return;
         }

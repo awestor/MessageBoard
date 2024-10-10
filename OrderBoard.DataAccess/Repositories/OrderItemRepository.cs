@@ -68,15 +68,20 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+        public Task<OrderItemDataModel> GetForAddAsync(Guid itemId, Guid orderId, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.ItemId == itemId && s.OrderId == orderId)
+                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
         public async Task<Guid> UpdateAsync(OrderItem model, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteByModelAsync(OrderItemDataModel model, CancellationToken cancellationToken)
+        public async Task DeleteByModelAsync(OrderItem model, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<OrderItemDataModel, OrderItem>(model);
-            _repository.DeleteAsync(entity, cancellationToken);
+            _repository.DeleteAsync(model, cancellationToken);
             return;
         }
     }

@@ -79,33 +79,11 @@ namespace OrderBoard.Api.Controllers
         {
             List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
             OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
-            List<ItemDataModel> ItemList = new List<ItemDataModel>();
-            //List<decimal> AllCount = new List<decimal>();
 
             foreach (var items in OrderItemList)
             {
                 var TempItemModel = await _orderItemService.GetItemClassAsync(items.ItemId, cancellationToken);
-                if (!ItemList.Any(str => str.Id == TempItemModel.Id))
-                {
-                    TempItemModel.Count += items.Count;
-                    //AllCount.Add(items.Count);
-                    ItemList.Add(TempItemModel);
-                }
-                else 
-                {
-                    foreach (var OrdItm in OrderItemList)
-                    {
-                        if(OrdItm.Id == TempItemModel.Id){
-                            OrdItm.Count += items.Count;
-                        }
-                    }
-                }
-            }
-            var i = 0;
-            foreach (var itemClass in ItemList)
-            {
-                await _orderItemService.SetCountAsync(itemClass, 0, true, cancellationToken);
-                i++;
+                await _orderItemService.SetCountAsync(TempItemModel, items.Count, true, cancellationToken);
             }
             foreach (var OrderItems in OrderItemList)
             {
