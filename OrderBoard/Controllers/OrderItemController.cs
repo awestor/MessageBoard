@@ -17,13 +17,10 @@ namespace OrderBoard.Api.Controllers
     public class OrderItemController : ControllerBase
     {
         private readonly IOrderItemService _orderItemService;
-        private readonly IOrderService _orderService;
-        private readonly IItemService _itemService;
-        public OrderItemController(IOrderItemService orderItemService, IOrderService orderService, IItemService itemService)
+
+        public OrderItemController(IOrderItemService orderItemService)
         {
             _orderItemService = orderItemService;
-            _orderService = orderService;
-            _itemService = itemService;
         }
         /// <summary>
         /// Дабавления нового поля в заказе

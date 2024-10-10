@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Users.Repository;
-using OrderBoard.Contracts.Items;
-using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace OrderBoard.AppServices.Orders.Services
@@ -20,11 +18,13 @@ namespace OrderBoard.AppServices.Orders.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public OrderService(IOrderRepository orderRepository, IMapper mapper,
-            IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
+            /*IOrderItemService orderItemService,*/ IUserRepository userRepository)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _configuration = configuration;
+            //_orderItemService = orderItemService;
             _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
@@ -98,9 +98,19 @@ namespace OrderBoard.AppServices.Orders.Services
         }
         public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
         {
+           /* List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
+            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
+
+            var temp = OrderItemList.Count;
+            for (int i = 0; i < temp-1; i++)
+            {
+                await _orderItemService.DeleteForOrderDeleteAsync(OrderItemList[i], cancellationToken);
+                OrderItemList.RemoveAt(0);
+            }*/
+
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
-            _orderRepository.DeleteByIdAsync(entity, cancellationToken);
+            await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
             return;
         }
         /// <summary>
@@ -113,6 +123,7 @@ namespace OrderBoard.AppServices.Orders.Services
         {
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
+            entity.PaidAt = DateTime.UtcNow;
             entity.OrderStatus = Contracts.Enums.OrderStatus.Ordered;
             var result = await _orderRepository.UpdateAsync(entity, cancellationToken);
             return result;

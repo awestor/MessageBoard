@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Orders.Services;
+using OrderBoard.AppServices.Repository.Services;
+using OrderBoard.AppServices.Users.Services;
+using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
+using OrderBoard.Domain.Entities;
 using System.Net;
+using System.Xml.Linq;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -16,9 +22,11 @@ namespace OrderBoard.Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public OrderController(IOrderService orderService)
+        private readonly IOrderItemService _orderItemService;
+        public OrderController(IOrderService orderService, IOrderItemService orderItemService)
         {
             _orderService = orderService;
+            _orderItemService = orderItemService;
         }
         /// <summary>
         /// Создание нового заказа
@@ -65,5 +73,47 @@ namespace OrderBoard.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("Delete Order")]
+        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
+        {
+            List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
+            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
+            List<ItemDataModel> ItemList = new List<ItemDataModel>();
+            //List<decimal> AllCount = new List<decimal>();
+
+            foreach (var items in OrderItemList)
+            {
+                var TempItemModel = await _orderItemService.GetItemClassAsync(items.ItemId, cancellationToken);
+                if (!ItemList.Any(str => str.Id == TempItemModel.Id))
+                {
+                    TempItemModel.Count += items.Count;
+                    //AllCount.Add(items.Count);
+                    ItemList.Add(TempItemModel);
+                }
+                else 
+                {
+                    foreach (var OrdItm in OrderItemList)
+                    {
+                        if(OrdItm.Id == TempItemModel.Id){
+                            OrdItm.Count += items.Count;
+                        }
+                    }
+                }
+            }
+            var i = 0;
+            foreach (var itemClass in ItemList)
+            {
+                await _orderItemService.SetCountAsync(itemClass, 0, true, cancellationToken);
+                i++;
+            }
+            foreach (var OrderItems in OrderItemList)
+            {
+                await _orderItemService.DeleteForOrderDeleteAsync(OrderItems, cancellationToken);
+            }
+
+            await _orderService.DeleteByIdAsync(id, cancellationToken);
+            return Ok("Заказ был удалён");
+        }
     }
 }

@@ -82,28 +82,19 @@ namespace OrderBoard.AppServices.Users.Services
 
                 await SetCountAsync(ItemTempModel, OrderItemTempModel.Count, true, cancellationToken);
 
-                var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
-                await _orderItemRepository.DeleteByModelAsync(entity, cancellationToken);
+                await _orderItemRepository.DeleteByModelAsync(OrderItemTempModel, cancellationToken);
                 return;
             }
             throw new Exception("Указанного поля заказа не существует или он был уже удалён!");
         }
 
-        public async Task<int> DeleteForOrderDeleteAsync(OrderItemDataModel OrderItemTempModel, CancellationToken cancellationToken)
+        public async Task DeleteForOrderDeleteAsync(OrderItemDataModel OrderItemTempModel, CancellationToken cancellationToken)
         {
             if (OrderItemTempModel != null)
             {
-                var ItemTempModel = await _itemService.GetForUpdateAsync(OrderItemTempModel.ItemId, cancellationToken);
-                if (ItemTempModel != null) 
-                {
-                    await SetCountAsync(ItemTempModel, OrderItemTempModel.Count, true, cancellationToken);
-                }
-
-                var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
-                await _orderItemRepository.DeleteByModelAsync(entity, cancellationToken);
-                return 200;
+                await _orderItemRepository.DeleteByModelAsync(OrderItemTempModel, cancellationToken);
             }
-            return 400;
+            return;
         }
         public async Task SetCountAsync(ItemDataModel ItemTempModel, decimal count, bool check, CancellationToken cancellationToken)
         {
@@ -118,6 +109,10 @@ namespace OrderBoard.AppServices.Users.Services
                 return;
             }
             throw new Exception("Указанного товара не существует или он был удалён за время оформления заказа!");
+        }
+        public async Task<ItemDataModel> GetItemClassAsync(Guid ItemId, CancellationToken cancellationToken)
+        {
+            return await _itemService.GetForUpdateAsync(ItemId, cancellationToken);
         }
     }
 }

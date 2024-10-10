@@ -73,9 +73,10 @@ namespace OrderBoard.DataAccess.Repositories
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteByModelAsync(OrderItem model, CancellationToken cancellationToken)
+        public async Task DeleteByModelAsync(OrderItemDataModel model, CancellationToken cancellationToken)
         {
-            var result = _repository.DeleteAsync(model, cancellationToken);
+            var entity = _mapper.Map<OrderItemDataModel, OrderItem>(model);
+            _repository.DeleteAsync(entity, cancellationToken);
             return;
         }
     }

@@ -9,11 +9,9 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
         public OrderProfile()
         {
             CreateMap<Order, OrderDataModel>()
-                .ForMember(s => s.TotalPrice, map => map.MapFrom(s => s.TotalPrice))
                 .ForMember(s => s.TotalCount, map => map.MapFrom(s => s.TotalCount));
             CreateMap<OrderDataModel, Order>(MemberList.None)
                 .ForMember(s => s.Id, map => map.MapFrom(s => s.Id))
-                .ForMember(s => s.TotalPrice, map => map.MapFrom(s => s.TotalPrice))
                 .ForMember(s => s.TotalCount, map => map.MapFrom(s => s.TotalCount));
 
             CreateMap<Order, OrderInfoModel>()
