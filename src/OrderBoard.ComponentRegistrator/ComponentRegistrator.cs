@@ -14,6 +14,8 @@ using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.AppServices.Files.Services;
+using OrderBoard.AppServices.Files.Repositories;
 
 namespace OrderBoard.ComponentRegistrator
 {
@@ -26,6 +28,7 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderItemService, OrderItemService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IFileService, FileService>();
 
 
             services.AddScoped<IOrderRepository, OrderRepository>();
@@ -33,6 +36,7 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
@@ -50,6 +54,7 @@ namespace OrderBoard.ComponentRegistrator
                 configure.AddProfile<ItemProfile>();
                 configure.AddProfile<UserProfile>();
                 configure.AddProfile<OrderItemProfile>();
+                configure.AddProfile<FileProfile>();
             });
             configuration.AssertConfigurationIsValid();
             return configuration;
