@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.Files
 {
+    /// <summary>
+    /// Модель создания файла
+    /// </summary>
     public class FileCreateModel
     {
         /// <summary>

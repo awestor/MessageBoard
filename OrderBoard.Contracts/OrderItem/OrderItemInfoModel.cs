@@ -1,6 +1,9 @@
 ﻿
 namespace OrderBoard.Contracts.OrderItem
 {
+    /// <summary>
+    /// Информационная модель полей заказа
+    /// </summary>
     public class OrderItemInfoModel
     {
         /// <summary>
@@ -19,10 +22,5 @@ namespace OrderBoard.Contracts.OrderItem
         /// Итоговая цена за отдельный товар
         /// </summary>
         public decimal? OrderPrice { get; set; }
-
-        public static implicit operator List<object>(OrderItemInfoModel? v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

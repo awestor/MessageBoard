@@ -3,6 +3,9 @@ using OrderBoard.Domain.Base;
 
 namespace OrderBoard.Domain.Entities
 {
+    /// <summary>
+    /// Сущность пользователя
+    /// </summary>
     public class EntUser:BaseEntity
     {
         /// <summary>

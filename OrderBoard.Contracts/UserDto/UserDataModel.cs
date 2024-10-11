@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.UserDto
 {
+    /// <summary>
+    /// Модель пользователя
+    /// </summary>
     public class UserDataModel
     {
         /// <summary>

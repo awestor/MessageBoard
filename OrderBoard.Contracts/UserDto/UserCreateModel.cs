@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.UserDto
 {
+    /// <summary>
+    /// Модель создания пользователя
+    /// </summary>
     public class UserCreateModel
     {
         /// <summary>

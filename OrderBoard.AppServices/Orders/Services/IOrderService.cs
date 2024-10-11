@@ -11,6 +11,11 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Guid> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken);
+        /// <summary>
+        /// Создание по авторизации
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Идентификатор заказа</returns>
         Task<Guid> CreateByAuthAsync(CancellationToken cancellationToken);
         /// <summary>
         /// Получение по id
@@ -33,6 +38,12 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Guid> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken);
+        /// <summary>
+        /// Удаление заказа по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор товара</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
         Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
         /// <summary>
         /// Подтверждение заказа

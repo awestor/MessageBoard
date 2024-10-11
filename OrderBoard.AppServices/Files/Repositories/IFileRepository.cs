@@ -2,6 +2,9 @@
 
 namespace OrderBoard.AppServices.Files.Repositories
 {
+    /// <summary>
+    /// Репозиторий для работы с файлами
+    /// </summary>
     public interface IFileRepository
     {
         /// <summary>

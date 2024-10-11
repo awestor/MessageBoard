@@ -2,6 +2,9 @@
 
 namespace OrderBoard.Domain.Entities
 {
+    /// <summary>
+    /// Сущность файла
+    /// </summary>
     public class FileContent : BaseEntity
     {
         /// <summary>

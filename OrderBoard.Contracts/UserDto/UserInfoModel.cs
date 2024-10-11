@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.UserDto
 {
+    /// <summary>
+    /// Информационная модель пользователя
+    /// </summary>
     public class UserInfoModel
     {
         /// <summary>

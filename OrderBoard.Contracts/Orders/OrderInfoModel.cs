@@ -2,6 +2,9 @@
 
 namespace OrderBoard.Contracts.Orders
 {
+    /// <summary>
+    /// Информационная модель заказа
+    /// </summary>
     public class OrderInfoModel
     {
         /// <summary>

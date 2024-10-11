@@ -1,5 +1,8 @@
 ﻿namespace OrderBoard.Contracts.Items
 {
+    /// <summary>
+    /// Информационная модель товара
+    /// </summary>
     public class ItemInfoModel
     {
         /// <summary>

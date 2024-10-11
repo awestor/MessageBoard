@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.Categories
 {
+    /// <summary>
+    /// Информационная модель категории
+    /// </summary>
     public class CategoryInfoModel
     {
         /// <summary>

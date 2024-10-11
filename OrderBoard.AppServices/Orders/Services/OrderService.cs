@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Orders;
@@ -122,6 +123,10 @@ namespace OrderBoard.AppServices.Orders.Services
         public async Task<Guid> ConfrimOrderById(Guid id, CancellationToken cancellationToken)
         {
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
+            if (model == null)
+            {
+                throw new EntitiesNotFoundException("Заказ не найден.");
+            }
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             entity.PaidAt = DateTime.UtcNow;
             entity.OrderStatus = Contracts.Enums.OrderStatus.Ordered;

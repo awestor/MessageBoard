@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Files.Services;
 using OrderBoard.Contracts.Files;
 using System.Net;
@@ -24,7 +25,7 @@ namespace OrderBoard.Api.Controllers
         {
             var fileId = await _fileService.CreateAsync(file, cancellationToken);
 
-            return StatusCode((int)HttpStatusCode.Accepted, fileId);
+            return StatusCode((int)HttpStatusCode.Created, fileId);
         }
 
         /// <summary>
@@ -39,6 +40,11 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> DownloadAsync(Guid id, CancellationToken cancellationToken)
         {
             var file = await _fileService.GetFileByIdAsync(id, cancellationToken);
+
+            if(file == null)
+            {
+                throw new EntitiesNotFoundException("Файл не найден.");
+            }
             Response.ContentLength = file?.Content.Length;
 
             return file is not null ? File(file.Content, file.ContentType, file.Name) : NoContent();
@@ -56,6 +62,10 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetFileInfoByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var fileInfo = await _fileService.GetFileInfoByIdAsync(id, cancellationToken);
+            if (fileInfo == null)
+            {
+                throw new EntitiesNotFoundException("Файл не найден.");
+            }
 
             return fileInfo is not null ? Ok(fileInfo) : NoContent();
         }

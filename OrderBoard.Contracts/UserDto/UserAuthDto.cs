@@ -1,5 +1,8 @@
 ﻿namespace OrderBoard.Contracts.UserDto
 {
+    /// <summary>
+    /// Модель аутентификации пользователя
+    /// </summary>
     public class UserAuthDto
     {
         /// <summary>

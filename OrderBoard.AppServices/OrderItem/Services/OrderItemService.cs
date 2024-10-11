@@ -129,7 +129,7 @@ namespace OrderBoard.AppServices.Users.Services
             }
             throw new Exception("Указанного товара не существует или он был удалён за время оформления заказа!");
         }
-        public async Task<ItemDataModel> GetItemClassAsync(Guid ItemId, CancellationToken cancellationToken)
+        public async Task<ItemDataModel> GetItemDataAsync(Guid ItemId, CancellationToken cancellationToken)
         {
             return await _itemService.GetForUpdateAsync(ItemId, cancellationToken);
         }

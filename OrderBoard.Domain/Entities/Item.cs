@@ -2,6 +2,9 @@
 
 namespace OrderBoard.Domain.Entities
 {
+    /// <summary>
+    /// Сущность товара
+    /// </summary>
     public class Item: BaseEntity
     {
         /// <summary>

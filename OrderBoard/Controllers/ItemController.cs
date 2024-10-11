@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Items.Services;
 using OrderBoard.Contracts.Items;
 using System.Net;
@@ -30,6 +31,10 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var result = await _itemService.GetByIdAsync(id, cancellationToken);
+            if (result == null)
+            {
+                throw new EntitiesNotFoundException("Товар не найден.");
+            }
             return Ok(result);
         }
     }

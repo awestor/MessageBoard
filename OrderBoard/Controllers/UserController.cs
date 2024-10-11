@@ -4,6 +4,7 @@ using OrderBoard.Contracts.UserDto;
 using System.Net;
 using OrderBoard.Contracts.Enums;
 using Microsoft.AspNetCore.Authorization;
+using OrderBoard.AppServices.Exceptions;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -60,6 +61,10 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
         {
             var result = await _userService.GetCurrentUserAsync(cancellationToken);
+            if (result == null)
+            {
+                throw new EntitiesNotFoundException("Пользователь не найден.");
+            }
             return StatusCode((int)HttpStatusCode.OK, result);
         }
     }

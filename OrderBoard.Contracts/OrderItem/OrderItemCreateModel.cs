@@ -1,5 +1,8 @@
 ﻿namespace OrderBoard.Contracts.OrderItem
 {
+    /// <summary>
+    /// Модель создания полей заказа
+    /// </summary>
     public class OrderItemCreateModel
     {
         /// <summary>

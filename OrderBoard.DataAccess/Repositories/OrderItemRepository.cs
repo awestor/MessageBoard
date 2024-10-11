@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.Contracts.OrderItem;
-using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
 using OrderBoard.Infrastructure.Repository;
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OrderBoard.AppServices.Hasher;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.User.Services;
 using OrderBoard.AppServices.Users.Repository;
@@ -35,6 +36,7 @@ namespace OrderBoard.AppServices.Users.Services
 
         public Task<Guid> CreateAsync(UserCreateModel model, CancellationToken cancellationToken)
         {
+            model.Password = CryptoHasher.GetBase64Hash(model.Password);
             var entity = _mapper.Map<UserCreateModel, EntUser>(model);
 
             return _userRepository.AddAsync(entity, cancellationToken);
@@ -75,6 +77,7 @@ namespace OrderBoard.AppServices.Users.Services
 
         public async Task<string> LoginAsync(UserAuthDto model, CancellationToken cancellationToken)
         {
+            model.Password = CryptoHasher.GetBase64Hash(model.Password);
             var UserAuthModel = await _userRepository
                 .GetByLoginOrEmailAndPasswordAsync(model.Login, model.Email, model.Password, cancellationToken);
             if (UserAuthModel == null)

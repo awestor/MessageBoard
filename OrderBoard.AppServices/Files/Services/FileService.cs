@@ -41,7 +41,7 @@ namespace OrderBoard.AppServices.Files.Services
         /// <returns></returns>
         public async Task<FileDataModel?> GetFileByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _repository.GetFileByIdAsync(id, cancellationToken);
+            return await _fileRepository.GetFileByIdAsync(id, cancellationToken);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OrderBoard.AppServices.Files.Services
         /// <returns></returns>
         public async Task<FileInfoModel?> GetFileInfoByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _repository.GetFileInfoByIdAsync(id, cancellationToken);
+            return await _fileRepository.GetFileInfoByIdAsync(id, cancellationToken);
         }
 
         private static async Task<byte[]> GetPayloadAsync(IFormFile file, CancellationToken cancellationToken)

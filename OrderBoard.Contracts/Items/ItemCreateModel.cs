@@ -1,5 +1,8 @@
 ﻿namespace OrderBoard.Contracts.Items
 {
+    /// <summary>
+    /// Модель создания товара
+    /// </summary>
     public class ItemCreateModel
     {
         /// <summary>

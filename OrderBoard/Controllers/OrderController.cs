@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.AppServices.Users.Services;
@@ -57,6 +58,10 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var result = await _orderService.GetByIdAsync(id, cancellationToken);
+            if (result == null)
+            {
+                throw new EntitiesNotFoundException("Заказ не найден.");
+            }
             return Ok(result);
         }
         /// <summary>
@@ -82,7 +87,7 @@ namespace OrderBoard.Api.Controllers
 
             foreach (var items in OrderItemList)
             {
-                var TempItemModel = await _orderItemService.GetItemClassAsync(items.ItemId, cancellationToken);
+                var TempItemModel = await _orderItemService.GetItemDataAsync(items.ItemId, cancellationToken);
                 await _orderItemService.SetCountAsync(TempItemModel, items.Count, true, cancellationToken);
             }
             foreach (var OrderItems in OrderItemList)

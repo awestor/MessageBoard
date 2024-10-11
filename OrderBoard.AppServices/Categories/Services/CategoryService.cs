@@ -10,6 +10,9 @@ namespace OrderBoard.AppServices.Categories.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Инициализировать экземпляр
+        /// </summary>
         public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;

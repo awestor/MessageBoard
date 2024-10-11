@@ -1,5 +1,8 @@
 ﻿namespace OrderBoard.Contracts.OrderItem
 {
+    /// <summary>
+    /// Модель полей заказа
+    /// </summary>
     public class OrderItemDataModel
     {
         /// <summary>

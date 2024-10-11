@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.Files
 {
+    /// <summary>
+    /// Информационная модель файла
+    /// </summary>
     public class FileInfoModel
     {
         /// <summary>

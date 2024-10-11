@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.Items
 {
+    /// <summary>
+    /// Модель товара
+    /// </summary>
     public class ItemDataModel
     {
         /// <summary>
