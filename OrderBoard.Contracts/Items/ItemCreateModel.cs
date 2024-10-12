@@ -12,11 +12,11 @@
         /// <summary>
         /// Количество товара
         /// </summary>
-        public decimal Count { get; set; }
+        public decimal? Count { get; set; }
         /// <summary>
         /// Цена товара
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         /// <summary>
         /// Описание товара
         /// </summary>
@@ -26,12 +26,8 @@
         /// </summary>
         public string? Comment { get; set; }
         /// <summary>
-        /// Id пользователя что создал его
-        /// </summary>
-        public Guid UserId { get; set; }
-        /// <summary>
         /// Id категории за которой закреплён товар
         /// </summary>
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
     }
 }

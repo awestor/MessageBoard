@@ -16,6 +16,8 @@ using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Files.Services;
 using OrderBoard.AppServices.Files.Repositories;
+using OrderBoard.AppServices.Other.Validators.Items;
+using OrderBoard.AppServices.Other.Validators.ItemValidator;
 
 namespace OrderBoard.ComponentRegistrator
 {

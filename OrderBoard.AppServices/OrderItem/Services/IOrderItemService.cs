@@ -56,7 +56,7 @@ namespace OrderBoard.AppServices.Repository.Services
         /// <param name="check"></param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
-        Task SetCountAsync(ItemDataModel ItemTempModel, decimal count, bool check, CancellationToken cancellationToken);
+        Task SetCountAsync(ItemDataModel ItemTempModel, CancellationToken cancellationToken);
         /// <summary>
         /// Получение товара
         /// </summary>

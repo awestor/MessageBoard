@@ -18,7 +18,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Стоимость товара
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         /// <summary>
         /// Коментарий к товару
         /// </summary>
@@ -26,7 +26,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество товара
         /// </summary>
-        public decimal Count { get; set; } 
+        public decimal? Count { get; set; } 
         /// <summary>
         /// Дата создания
         /// </summary>
@@ -34,7 +34,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Id категории за которой закреплён товар
         /// </summary>
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         /// <summary>
         /// Категория за которой закреплён товар
         /// </summary>
@@ -42,7 +42,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Id пользователя что создал его
         /// </summary>
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         /// <summary>
         /// Пользователь за которым закреплён товар
         /// </summary>

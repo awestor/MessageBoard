@@ -10,7 +10,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Id товара
         /// </summary>
-        public Guid ItemId { get; set; }
+        public Guid? ItemId { get; set; }
         /// <summary>
         /// Сущность товара
         /// </summary>
@@ -18,7 +18,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Id заказа
         /// </summary>
-        public Guid OrderId { get; set; }
+        public Guid? OrderId { get; set; }
         /// <summary>
         /// Сущность заказа
         /// </summary>
@@ -26,10 +26,10 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество товаров
         /// </summary>
-        public decimal Count { get; set; }
+        public decimal? Count { get; set; }
         /// <summary>
         /// Итоговая цена за отдельный товар
         /// </summary>
-        public decimal OrderPrice { get; set; }
+        public decimal? OrderPrice { get; set; }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrderBoard.AppServices.Exceptions;
-using OrderBoard.AppServices.Items.Services;
-using OrderBoard.AppServices.Orders.Services;
+using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.Contracts.OrderItem;
 using System.Net;

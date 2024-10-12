@@ -16,7 +16,6 @@ namespace OrderBoard.DataAccess.Configurations
             builder.HasKey(x => x.Id);
             builder.HasAlternateKey(x => x.Login);
             builder.HasAlternateKey(x => x.Email);
-            builder.HasAlternateKey(x => x.Password);
             builder.Property(x => x.Email).HasMaxLength(256).IsRequired();
             builder.Property(x => x.Password).HasMaxLength(128).IsRequired();
             builder.Property(x => x.PhoneNumber).HasMaxLength(48);

@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderBoard.Contracts.Items
 {
-    /// <summary>
-    /// Модель товара
-    /// </summary>
-    public class ItemDataModel
+    public class ItemUpdateModel
     {
         /// <summary>
         /// Идентефикатор товара
@@ -20,32 +17,24 @@ namespace OrderBoard.Contracts.Items
         /// </summary>
         public string? Name { get; set; }
         /// <summary>
-        /// Описание товара
-        /// </summary>
-        public string? Description { get; set; }
-        /// <summary>
         /// Стоимость товара
         /// </summary>
         public decimal? Price { get; set; }
-        /// <summary>
-        /// Коментарий к товару
-        /// </summary>
-        public string? Comment { get; set; }
         /// <summary>
         /// Количество товара
         /// </summary>
         public decimal? Count { get; set; }
         /// <summary>
-        /// Дата создания
-        /// </summary>
-        public DateTime? CreatedAt { get; set; }
-        /// <summary>
         /// Id категории за которой закреплён товар
         /// </summary>
         public Guid? CategoryId { get; set; }
         /// <summary>
-        /// Категория за которой закреплён товар
+        /// Коментарий к товару
         /// </summary>
-        public Guid? UserId { get; set; }
+        public string? Comment { get; set; }
+        /// <summary>
+        /// Описание товара
+        /// </summary>
+        public string? Description { get; set; }
     }
 }

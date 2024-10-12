@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Files.Services;
+using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.Files;
 using System.Net;
 

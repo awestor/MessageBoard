@@ -14,7 +14,6 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
         public CategoryProfile() 
         {
             CreateMap<Category, CategoryInfoModel>()
-                .ForMember(s => s.Id, map => map.MapFrom(s => s.Id))
                 .ForMember(s => s.Created, map => map.MapFrom(s => s.Created))
                 .ForMember(s => s.Name, map => map.MapFrom(s => s.Name))
                 .ForMember(s => s.Description, map => map.MapFrom(s => s.Description));
@@ -23,6 +22,9 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.Name, map => map.MapFrom(s => s.Title))
                 .ForMember(s => s.Description, map => map.MapFrom(s => s.Description))
                 .ForMember(s => s.Created, map => map.MapFrom(s => DateTime.UtcNow));
+
+            CreateMap<CategoryDataModel, Category>(MemberList.None);
+            CreateMap<Category, CategoryDataModel>();
         }
     }
 }

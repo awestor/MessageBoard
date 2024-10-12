@@ -20,17 +20,33 @@ namespace OrderBoard.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddAsync(Category model, CancellationToken cancellationToken)
+        public async Task<Guid?> AddAsync(Category model, CancellationToken cancellationToken)
         {
             await _repository.AddAsync(model, cancellationToken);
             return model.Id;
         }
 
-        public Task<CategoryInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<CategoryInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<CategoryInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
+        }
+        public Task<CategoryDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.Id == id)
+                .ProjectTo<CategoryDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+        public async Task UpdateAsync(Category model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return;
+        }
+        public async Task DeleteByIdAsync(Category model, CancellationToken cancellationToken)
+        {
+            await _repository.DeleteAsync(model, cancellationToken);
+            return;
         }
     }
 }

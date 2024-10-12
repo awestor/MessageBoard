@@ -10,12 +10,12 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Название файла
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string? Name { get; set; } = null!;
 
         /// <summary>
         /// Дата создания файла
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// Контент
@@ -30,6 +30,6 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Размер файла
         /// </summary>
-        public int Length { get; set; }
+        public int? Length { get; set; }
     }
 }

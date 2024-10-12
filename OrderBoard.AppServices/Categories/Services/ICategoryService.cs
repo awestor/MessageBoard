@@ -1,9 +1,5 @@
 ﻿using OrderBoard.Contracts.Categories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrderBoard.Contracts.Items;
 
 namespace OrderBoard.AppServices.Categories.Services
 {
@@ -15,7 +11,7 @@ namespace OrderBoard.AppServices.Categories.Services
         /// <param name="model">Модель.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор сохранённой сущности.</returns>
-        Task<Guid> CreateAsync(CategoryCreateModel model, CancellationToken cancellationToken);
+        Task<Guid?> CreateAsync(CategoryCreateModel model, CancellationToken cancellationToken);
         /// <summary>
         /// Получить модель категории.
         /// </summary>
@@ -23,5 +19,7 @@ namespace OrderBoard.AppServices.Categories.Services
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель категории.</returns>
         Task<CategoryInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Guid?> UpdateAsync(CategoryDataModel model, CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }

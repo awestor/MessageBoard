@@ -4,7 +4,7 @@ using OrderBoard.Contracts.UserDto;
 using System.Net;
 using OrderBoard.Contracts.Enums;
 using Microsoft.AspNetCore.Authorization;
-using OrderBoard.AppServices.Exceptions;
+using OrderBoard.AppServices.Other.Exceptions;
 
 namespace OrderBoard.Api.Controllers
 {

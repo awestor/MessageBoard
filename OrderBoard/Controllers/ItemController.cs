@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Items.Services;
+using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.Items;
 using System.Net;
 
@@ -36,6 +36,28 @@ namespace OrderBoard.Api.Controllers
                 throw new EntitiesNotFoundException("Товар не найден.");
             }
             return Ok(result);
+        }
+        [HttpGet("GetAllItem")]
+        [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllItem(CancellationToken cancellationToken)
+        {
+            var result = await _itemService.GetAllItemAsync(cancellationToken) 
+                ?? throw new EntitiesNotFoundException("Вы не продаёте никаких товаров.");
+            return Ok(result);
+        }
+        [HttpPost("Update Item")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
+        {
+            var result = await _itemService.UpdateAsync(model, cancellationToken);
+            return Ok(result + "\n Обновление успешно.");
+        }
+        [HttpPost("Delete Item")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            await _itemService.DeleteByIdAsync(id, cancellationToken);
+            return Ok("Товар был удалён.");
         }
     }
 }

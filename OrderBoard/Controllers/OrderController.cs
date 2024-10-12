@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Orders.Services;
+using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Repository.Services;
-using OrderBoard.AppServices.Users.Services;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
-using OrderBoard.Domain.Entities;
 using System.Net;
-using System.Xml.Linq;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -74,6 +71,26 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfrimOrderById(Guid id, CancellationToken cancellationToken)
         {
+            List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
+            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
+            List<ItemDataModel> ItemList = new List<ItemDataModel>();
+            foreach (var orderItem in OrderItemList)
+            {
+                var TempItemModel = await _orderItemService.GetItemDataAsync(orderItem.ItemId, cancellationToken);
+                if(TempItemModel.Count >= orderItem.Count)
+                {
+                    TempItemModel.Count += orderItem.Count;
+                    ItemList.Add(TempItemModel);
+                }
+                else
+                {
+                    throw new Exception("Количество товара в заказе больше, чем есть в наличе!");
+                }
+            }
+            foreach (var item in ItemList)
+            {
+                await _orderItemService.SetCountAsync(item, cancellationToken);
+            }
             var result = await _orderService.ConfrimOrderById(id, cancellationToken);
             return Ok(result);
         }
@@ -85,11 +102,6 @@ namespace OrderBoard.Api.Controllers
             List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
             OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
 
-            foreach (var items in OrderItemList)
-            {
-                var TempItemModel = await _orderItemService.GetItemDataAsync(items.ItemId, cancellationToken);
-                await _orderItemService.SetCountAsync(TempItemModel, items.Count, true, cancellationToken);
-            }
             foreach (var OrderItems in OrderItemList)
             {
                 await _orderItemService.DeleteForOrderDeleteAsync(OrderItems, cancellationToken);

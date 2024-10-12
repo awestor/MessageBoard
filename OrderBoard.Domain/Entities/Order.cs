@@ -19,19 +19,19 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество заказов
         /// </summary>
-        public decimal TotalCount { get; set; }
+        public decimal? TotalCount { get; set; }
         /// <summary>
         /// Итоговая стоимость заказа
         /// </summary>
-        public decimal TotalPrice { get; set; }
+        public decimal? TotalPrice { get; set; }
         /// <summary>
         /// Статус заказа
         /// </summary>
-        public OrderStatus OrderStatus { get; set; } = 0;
+        public OrderStatus? OrderStatus { get; set; } = 0;
         /// <summary>
         /// Id пользователя
         /// </summary>
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         /// <summary>
         /// Ссылка на пользователя
         /// </summary>

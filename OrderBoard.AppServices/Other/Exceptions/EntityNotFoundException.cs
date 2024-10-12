@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OrderBoard.AppServices.Exceptions
+namespace OrderBoard.AppServices.Other.Exceptions
 {
     /// <summary>
     /// Ошибка получения сущности

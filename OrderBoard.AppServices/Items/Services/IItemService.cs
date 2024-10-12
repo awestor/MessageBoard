@@ -33,6 +33,7 @@ namespace OrderBoard.AppServices.Items.Services
         /// <param name="model">Модель товара.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор товара</returns>
+        Task<Guid> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken);
         Task<Guid> UpdateAsync(ItemDataModel model, CancellationToken cancellationToken);
         /// <summary>
         /// Удаление по идентификатору
@@ -41,5 +42,7 @@ namespace OrderBoard.AppServices.Items.Services
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
         Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Decimal?> GetPriceAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<ItemInfoModel>> GetAllItemAsync(CancellationToken cancellationToken);
     }
 }

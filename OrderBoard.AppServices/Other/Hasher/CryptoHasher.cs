@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace OrderBoard.AppServices.Hasher
+namespace OrderBoard.AppServices.Other.Hasher
 {
     public class CryptoHasher
     {

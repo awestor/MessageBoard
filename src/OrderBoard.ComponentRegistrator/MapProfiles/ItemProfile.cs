@@ -23,7 +23,6 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.Name, map => map.MapFrom(s => s.Name))
                 .ForMember(s => s.Count, map => map.MapFrom(s => s.Count))
                 .ForMember(s => s.Price, map => map.MapFrom(s => s.Price))
-                .ForMember(s => s.UserId, map => map.MapFrom(s => s.UserId))
                 .ForMember(s => s.CategoryId, map => map.MapFrom(s => s.CategoryId))
                 .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 

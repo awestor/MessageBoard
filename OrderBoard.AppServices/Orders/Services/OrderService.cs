@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using OrderBoard.AppServices.Exceptions;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
-using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace OrderBoard.AppServices.Orders.Services

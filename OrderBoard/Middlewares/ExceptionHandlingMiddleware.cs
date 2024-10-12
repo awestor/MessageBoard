@@ -1,8 +1,8 @@
 ﻿using static System.Net.Mime.MediaTypeNames;
 using System.Net;
 using System.Text.Json;
-using OrderBoard.AppServices.Exceptions;
 using OrderBoard.Contracts.ErrorDto;
+using OrderBoard.AppServices.Other.Exceptions;
 
 namespace OrderBoard.Api.Middlewares
 {
@@ -50,7 +50,8 @@ namespace OrderBoard.Api.Middlewares
 
             return exception switch
             {
-                EntitiesNotFoundException ex => new HumanReadableError("Пользователи не были добавлены.", null!, traceID, statusCode, ex.HumanReadableMessage),
+                EntitysNotVaildException nv => new HumanReadableError("Ошибка.", null!, traceID, statusCode, nv.HumanReadableMessage),
+                EntitiesNotFoundException ex => new HumanReadableError("Ошибка.", null!, traceID, statusCode, ex.HumanReadableMessage),
                 EntityNotFoundException => new ApiError("Сущность не найдена.", null!, traceID, statusCode),
                 _ => new ApiError("Произошла непредвиденная ошибка.", null!, traceID, statusCode)
             };
@@ -63,6 +64,7 @@ namespace OrderBoard.Api.Middlewares
                 ArgumentException => HttpStatusCode.BadRequest,
                 EntityNotFoundException => HttpStatusCode.NotFound,
                 EntitiesNotFoundException => HttpStatusCode.NotFound,
+                EntitysNotVaildException => HttpStatusCode.NotAcceptable,
                 _ => HttpStatusCode.InternalServerError
             };
 

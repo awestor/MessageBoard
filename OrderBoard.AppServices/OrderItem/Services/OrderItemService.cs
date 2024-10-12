@@ -31,7 +31,7 @@ namespace OrderBoard.AppServices.Users.Services
 
         public async Task<Guid> CreateAsync(OrderItemCreateModel model, CancellationToken cancellationToken)
         {   
-            var ItemTempModel = await _itemService.GetForUpdateAsync(model.ItemId, cancellationToken);
+            var ItemTempModel = await _itemService.GetByIdAsync(model.ItemId, cancellationToken);
             if (ItemTempModel.Count >= model.Count)
             {
                 var OrderTempModel = await _orderService.GetForUpdateAsync(model.OrderId, cancellationToken);
@@ -40,8 +40,6 @@ namespace OrderBoard.AppServices.Users.Services
                 OrderTempModel.TotalPrice += model.Count * ItemTempModel.Price;
                 OrderTempModel.OrderStatus = OrderStatus.Draft;
                 await _orderService.UpdateAsync(OrderTempModel, cancellationToken);
-
-                await SetCountAsync(ItemTempModel, model.Count, false, cancellationToken);
 
                 var modelTwo = await GetForAddAsync(model.ItemId, model.OrderId, cancellationToken);
                 if (modelTwo == null)
@@ -88,7 +86,6 @@ namespace OrderBoard.AppServices.Users.Services
             var OrderItemTempModel = await _orderItemRepository.GetForUpdateAsync(id, cancellationToken);
             if (OrderItemTempModel != null)
             {
-                var ItemTempModel = await _itemService.GetForUpdateAsync(OrderItemTempModel.ItemId, cancellationToken);
                 var OrderTempModel = await _orderService.GetForUpdateAsync(OrderItemTempModel.OrderId, cancellationToken);
 
                 if (OrderTempModel != null) {
@@ -96,8 +93,7 @@ namespace OrderBoard.AppServices.Users.Services
                     OrderTempModel.TotalPrice -= OrderItemTempModel.OrderPrice;
                     await _orderService.UpdateAsync(OrderTempModel, cancellationToken);
                 }
-
-                await SetCountAsync(ItemTempModel, OrderItemTempModel.Count, true, cancellationToken);
+                else { throw new Exception("Указанного заказа не существует или он был уже удалён!"); }
 
                 var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
                 await _orderItemRepository.DeleteByModelAsync(entity, cancellationToken);
@@ -115,15 +111,10 @@ namespace OrderBoard.AppServices.Users.Services
             }
             return;
         }
-        public async Task SetCountAsync(ItemDataModel ItemTempModel, decimal count, bool check, CancellationToken cancellationToken)
+        public async Task SetCountAsync(ItemDataModel ItemTempModel, CancellationToken cancellationToken)
         {
             if (ItemTempModel != null)
             {
-                if (check != false) 
-                {
-                    ItemTempModel.Count += count;
-                }
-                else ItemTempModel.Count -= count;
                 await _itemService.UpdateAsync(ItemTempModel, cancellationToken);
                 return;
             }

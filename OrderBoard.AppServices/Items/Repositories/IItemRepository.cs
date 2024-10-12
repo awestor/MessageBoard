@@ -22,14 +22,14 @@ namespace OrderBoard.AppServices.Items.Repositories
         /// <param name="id">Идентификатор.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель товара.</returns>
-        Task<ItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Получить модель для обновления
         /// </summary>
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
+        Task<ItemDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Обновление товара
         /// </summary>
@@ -44,5 +44,7 @@ namespace OrderBoard.AppServices.Items.Repositories
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task DeleteByIdAsync(Item model, CancellationToken cancellationToken);
+        Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken);
+        Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken);
     }
 }

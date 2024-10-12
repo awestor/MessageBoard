@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using OrderBoard.AppServices.Hasher;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.AppServices.Other.Hasher;
 using OrderBoard.AppServices.User.Services;
 using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Enums;
