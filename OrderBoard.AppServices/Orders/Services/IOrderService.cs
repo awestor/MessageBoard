@@ -52,5 +52,6 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<Guid> ConfrimOrderById(Guid id, CancellationToken cancellationToken);
+        Task<OrderDataModel> GetOrderIdByUserIdAsync(CancellationToken cancellationToken);
     }
 }

@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using OrderBoard.AppServices.Items.Repositories;
+using OrderBoard.AppServices.Items.SpecificationContext.Builders;
 using OrderBoard.AppServices.Other.Exceptions;
-
-using OrderBoard.AppServices.Other.Validators.Items;
-
 using OrderBoard.Contracts.Items;
-
+using OrderBoard.Contracts.Items.Requests;
 using OrderBoard.Domain.Entities;
 using System.Net;
 using System.Security.Claims;
@@ -19,16 +17,19 @@ namespace OrderBoard.AppServices.Items.Services
         private readonly IItemRepository _itemRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IItemSpecificationBuilder _itemSpecificationBuilder;
 
 
-        public ItemService(IItemRepository itemRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public ItemService(IItemRepository itemRepository, IMapper mapper,
+            IHttpContextAccessor httpContextAccessor, IItemSpecificationBuilder itemSpecificationBuilder)
         {
             _itemRepository = itemRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _itemSpecificationBuilder = itemSpecificationBuilder;
         }
 
-        public Task<Guid> CreateAsync(ItemCreateModel model, CancellationToken cancellationToken)
+        public Task<Guid?> CreateAsync(ItemCreateModel model, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -37,7 +38,7 @@ namespace OrderBoard.AppServices.Items.Services
             entity.UserId = new Guid(claimId);
             return _itemRepository.AddAsync(entity, cancellationToken);
         }
-        public async Task<Guid> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
+        public async Task<Guid?> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
         {
             var newModel = await _itemRepository.GetForUpdateAsync(model.Id, cancellationToken) ?? throw new EntitiesNotFoundException("Товар не найден");
 
@@ -58,7 +59,7 @@ namespace OrderBoard.AppServices.Items.Services
             var entity = _mapper.Map<ItemDataModel, Item>(newModel);
             return await _itemRepository.UpdateAsync(entity, cancellationToken);
         }
-        public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             var model = await _itemRepository.GetForUpdateAsync(id, cancellationToken);
 
@@ -71,25 +72,25 @@ namespace OrderBoard.AppServices.Items.Services
             }
 
             var entity = _mapper.Map<ItemDataModel, Item>(model);
-            await _itemRepository.DeleteByIdAsync(entity, cancellationToken);
+            await _itemRepository.DeleteAsync(entity, cancellationToken);
             return;
         }
 
-        public Task<ItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _itemRepository.GetByIdAsync(id, cancellationToken);
         }
 
-        public Task<ItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        public Task<ItemDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _itemRepository.GetForUpdateAsync(id, cancellationToken);
         }
-        public async Task<Guid> UpdateAsync(ItemDataModel model, CancellationToken cancellationToken)
+        public async Task<Guid?> UpdateAsync(ItemDataModel model, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<ItemDataModel, Item>(model);
             return await _itemRepository.UpdateAsync(entity, cancellationToken);
         }
-        public async Task<Decimal?> GetPriceAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken)
         {
             return await _itemRepository.GetPriceAsync(id, cancellationToken);
         }
@@ -99,6 +100,20 @@ namespace OrderBoard.AppServices.Items.Services
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             return await _itemRepository.GetAllItemAsync(new Guid(claimsId), cancellationToken); ;
+        }
+
+        public Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var specification = _itemSpecificationBuilder.Build(request, new Guid(claimsId));
+            return _itemRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+        }
+
+        public Task<List<ItemInfoModel>> GetByCategoryIdAsync(Guid? categoryId, CancellationToken cancellationToken)
+        {
+            var specification = _itemSpecificationBuilder.Build(categoryId);
+            return _itemRepository.GetBySpecificationAsync(specification, cancellationToken);
         }
     }
 }

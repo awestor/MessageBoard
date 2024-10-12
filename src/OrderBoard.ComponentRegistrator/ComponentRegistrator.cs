@@ -16,9 +16,8 @@ using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Files.Services;
 using OrderBoard.AppServices.Files.Repositories;
-using OrderBoard.AppServices.Other.Validators.Items;
-using OrderBoard.AppServices.Other.Validators.ItemValidator;
-
+using OrderBoard.AppServices.Items.SpecificationContext.Builders;
+using OrderBoard.AppServices.Other.Specifications;
 namespace OrderBoard.ComponentRegistrator
 {
     public static class ComponentRegistrator
@@ -32,6 +31,7 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IFileService, FileService>();
 
+            
 
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -39,6 +39,9 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
+
+
+            services.AddScoped<IItemSpecificationBuilder, ItemSpecificationBuilder>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 

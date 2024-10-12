@@ -6,8 +6,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderBoard.Api.Controllers;
+using OrderBoard.Api.Middlewares;
 using OrderBoard.AppServices.Other.Validators.Items;
 using OrderBoard.AppServices.Other.Validators.ItemValidator;
+using OrderBoard.AppServices.Other.Validators.OrderItems;
+using OrderBoard.AppServices.Other.Validators.Users;
 using OrderBoard.ComponentRegistrator;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.DataAccess;
@@ -82,6 +85,8 @@ namespace OrderBoard.Api
             builder.Services.AddMvc();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemValidator>();
             builder.Services.AddFluentValidationAutoValidation();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -105,6 +110,7 @@ namespace OrderBoard.Api
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

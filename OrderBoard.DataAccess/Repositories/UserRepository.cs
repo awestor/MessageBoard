@@ -21,13 +21,13 @@ namespace OrderBoard.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddAsync(EntUser model, CancellationToken cancellationToken)
+        public async Task<Guid?> AddAsync(EntUser model, CancellationToken cancellationToken)
         {
             await _repository.AddAsync(model, cancellationToken);
             return model.Id;
         }
 
-        public Task<UserInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<UserInfoModel>(_mapper.ConfigurationProvider)
@@ -41,22 +41,22 @@ namespace OrderBoard.DataAccess.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<UserDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        public Task<UserDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<UserDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Guid> UpdateAsync(EntUser model, CancellationToken cancellationToken)
+        public async Task<Guid?> UpdateAsync(EntUser model, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteByIdAsync(EntUser model, CancellationToken cancellationToken)
+        public Task DeleteByIdAsync(EntUser model, CancellationToken cancellationToken)
         {
-            var result = _repository.DeleteAsync(model, cancellationToken);
-            return;
+            _repository.DeleteAsync(model, cancellationToken);
+            return Task.CompletedTask;
         }
     }
 }

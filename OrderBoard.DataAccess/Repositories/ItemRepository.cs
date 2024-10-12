@@ -6,7 +6,7 @@ using OrderBoard.Infrastructure.Repository;
 using OrderBoard.Contracts.Items;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.AppServices.Other.Exceptions;
-using OrderBoard.Contracts.OrderItem;
+using OrderBoard.AppServices.Other.Specifications;
 
 namespace OrderBoard.DataAccess.Repositories
 {
@@ -21,10 +21,37 @@ namespace OrderBoard.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddAsync(Item model, CancellationToken cancellationToken)
+        public async Task<Guid?> AddAsync(Item model, CancellationToken cancellationToken)
         {
             await _repository.AddAsync(model, cancellationToken);
             return model.Id;
+        }
+
+        public async Task<List<ItemInfoModel>> GetBySpecificationWithPaginationAsync(
+            ISpecification<Item> specification, int take, int? skip, CancellationToken cancellationToken)
+        {
+            var query = _repository
+                .GetAll()
+                .OrderBy(item => item.Id)
+                .Where(specification.PredicateExpression);
+
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+
+            return await query
+                .Take(take)
+                .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<ItemInfoModel>> GetBySpecificationAsync(ISpecification<Item> specification, CancellationToken cancellationToken)
+        {
+            return await _repository
+                .GetByPredicate(specification.PredicateExpression)
+                .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
         }
 
         public Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
@@ -39,16 +66,6 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public async Task<Guid> UpdateAsync(Item model, CancellationToken cancellationToken)
-        {
-            await _repository.UpdateAsync(model, cancellationToken);
-            return model.Id;
-        }
-        public async Task DeleteByIdAsync(Item model, CancellationToken cancellationToken)
-        {
-            var result = _repository.DeleteAsync(model, cancellationToken);
-            return;
-        }
         public async Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken)
         {
             var result = await _repository.GetAll().Where(s => s.Id == id)
@@ -62,18 +79,21 @@ namespace OrderBoard.DataAccess.Repositories
         }
         public async Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken)
         {
-            List<ItemInfoModel> ItemList = [];
-            int i = 0;
-            while (true)
-            {
-                var temp = await _repository.GetAll().Where(s => s.UserId == id)
+                var ItemList = await _repository.GetAll().Where(s => s.UserId == id)
                     .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
-                    .Skip(i).FirstOrDefaultAsync(cancellationToken);
-                if (temp != null) { ItemList.Add(temp); i++; }
-                else break;
-            }
+                    .ToListAsync(cancellationToken);
 
             return ItemList;
+        }
+        public async Task<Guid?> UpdateAsync(Item model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return model.Id;
+        }
+        public Task DeleteAsync(Item model, CancellationToken cancellationToken)
+        {
+            _repository.DeleteAsync(model, cancellationToken);
+            return Task.CompletedTask;
         }
     }
 }

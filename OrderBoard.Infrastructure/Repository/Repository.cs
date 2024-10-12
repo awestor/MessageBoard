@@ -87,6 +87,6 @@ namespace OrderBoard.Infrastructure.Repository
         IQueryable<TEntity> IRepository<TEntity, TContext>.GetByPredicate(Expression<Func<TEntity, bool>> predicate)
         {
             return DbSet.Where(predicate);
-        }
+        }      
     }
 }

@@ -73,7 +73,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         public Task<OrderInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return _orderRepository.GetByIdAsync(id, cancellationToken);
+            return _orderRepository.GetByIdAsync(id, cancellationToken); ;
         }
         /// <summary>
         /// Получение модели заказа для обновления
@@ -98,16 +98,6 @@ namespace OrderBoard.AppServices.Orders.Services
         }
         public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-           /* List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
-            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
-
-            var temp = OrderItemList.Count;
-            for (int i = 0; i < temp-1; i++)
-            {
-                await _orderItemService.DeleteForOrderDeleteAsync(OrderItemList[i], cancellationToken);
-                OrderItemList.RemoveAt(0);
-            }*/
-
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
@@ -131,6 +121,14 @@ namespace OrderBoard.AppServices.Orders.Services
             entity.OrderStatus = Contracts.Enums.OrderStatus.Ordered;
             var result = await _orderRepository.UpdateAsync(entity, cancellationToken);
             return result;
+        }
+
+        public async Task<OrderDataModel> GetOrderIdByUserIdAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var OrderModel = await _orderRepository.GetByUserIdAsync(new Guid(claimId), cancellationToken);
+            return OrderModel;
         }
     }
 }

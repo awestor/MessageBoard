@@ -19,15 +19,15 @@ namespace OrderBoard.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddAsync(OrderItem model, CancellationToken cancellationToken)
+        public async Task<Guid?> AddAsync(OrderItem model, CancellationToken cancellationToken)
         {
             await _repository.AddAsync(model, cancellationToken);
             return model.Id;
         }
 
-        public async Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            List<OrderItemInfoModel> tempOrderItemList = new List<OrderItemInfoModel>();
+            /*List<OrderItemInfoModel> tempOrderItemList = new List<OrderItemInfoModel>();
             int i = 0;
             while (true) {
                 var temp = await _repository.GetAll().Where(s => s.OrderId == id)
@@ -35,53 +35,51 @@ namespace OrderBoard.DataAccess.Repositories
                     .Skip(i).FirstOrDefaultAsync(cancellationToken);
                 if (temp != null) {tempOrderItemList.Add(temp); i++; }
                 else break;
-            }
-            
+            }*/
+            var tempOrderItemList = await _repository.GetAll().Where(s => s.OrderId == id)
+                .OrderBy(s => s.Id)
+                .ProjectTo<OrderItemInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
             return tempOrderItemList;
         }
-        public async Task<List<OrderItemDataModel>> GetAllByOrderIdInDataModelAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<List<OrderItemDataModel>> GetAllByOrderIdInDataModelAsync(Guid? id, CancellationToken cancellationToken)
         {
-            List<OrderItemDataModel> tempOrderItemList = new List<OrderItemDataModel>();
-            int i = 0;
-            while (true)
-            {
-                var temp = await _repository.GetAll().Where(s => s.OrderId == id)
-                    .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
-                    .Skip(i).FirstOrDefaultAsync(cancellationToken);
-                if (temp != null) { tempOrderItemList.Add(temp); i++; }
-                else break;
-            }
+            var tempOrderItemList = await _repository.GetAll().Where(s => s.OrderId == id)
+                .OrderBy(s => s.Id)
+                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
             return tempOrderItemList;
         }
 
-        public Task<OrderItemInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<OrderItemInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public Task<OrderItemDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderItemDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public Task<OrderItemDataModel> GetForAddAsync(Guid itemId, Guid orderId, CancellationToken cancellationToken)
+        public Task<OrderItemDataModel> GetForAddAsync(Guid? itemId, Guid? orderId, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.ItemId == itemId && s.OrderId == orderId)
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public async Task<Guid> UpdateAsync(OrderItem model, CancellationToken cancellationToken)
+        public async Task<Guid?> UpdateAsync(OrderItem model, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteByModelAsync(OrderItem model, CancellationToken cancellationToken)
+        public Task DeleteByModelAsync(OrderItem model, CancellationToken cancellationToken)
         {
             _repository.DeleteAsync(model, cancellationToken);
-            return;
+            return Task.CompletedTask;
         }
     }
 }

@@ -93,8 +93,6 @@ namespace OrderBoard.DbMigrator.Migrations
 
                     b.HasAlternateKey("Login");
 
-                    b.HasAlternateKey("Password");
-
                     b.ToTable("EntUser");
                 });
 
@@ -113,10 +111,10 @@ namespace OrderBoard.DbMigrator.Migrations
                         .HasMaxLength(4096)
                         .HasColumnType("character varying(4096)");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Length")
+                    b.Property<int?>("Length")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -135,13 +133,15 @@ namespace OrderBoard.DbMigrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("Count")
+                    b.Property<decimal?>("Count")
+                        .IsRequired()
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("CreatedAt")
@@ -157,10 +157,12 @@ namespace OrderBoard.DbMigrator.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
 
-                    b.Property<decimal>("Price")
+                    b.Property<decimal?>("Price")
+                        .IsRequired()
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -181,19 +183,14 @@ namespace OrderBoard.DbMigrator.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("OrderStatus")
+                    b.Property<int?>("OrderStatus")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("TotalCount")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -209,16 +206,19 @@ namespace OrderBoard.DbMigrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Count")
+                    b.Property<decimal?>("Count")
+                        .IsRequired()
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("ItemId")
+                    b.Property<Guid?>("ItemId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("OrderId")
+                        .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("OrderPrice")
+                    b.Property<decimal?>("OrderPrice")
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");

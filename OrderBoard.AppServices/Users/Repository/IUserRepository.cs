@@ -13,28 +13,28 @@ namespace OrderBoard.AppServices.Users.Repository
         /// <param name="model">Доменная сущность пользователя</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор добавленной пользователя</returns>
-        Task<Guid> AddAsync(EntUser model, CancellationToken cancellationToken);
+        Task<Guid?> AddAsync(EntUser model, CancellationToken cancellationToken);
         /// <summary>
         /// Получить модель пользователя.
         /// </summary>
         /// <param name="id">Идентификатор категории.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель пользователя.</returns>
-        Task<UserInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Обновление пользователя
         /// </summary>
         /// <param name="model">Модель пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Идентификатор пользователя</returns>
-        Task<Guid> UpdateAsync(EntUser model, CancellationToken cancellationToken);
+        Task<Guid?> UpdateAsync(EntUser model, CancellationToken cancellationToken);
         /// <summary>
         /// Вернуть для обновления
         /// </summary>
         /// <param name="id">Идентификатор пользователя</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель пользователя</returns>
-        Task<UserDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken);
+        Task<UserDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Удаление товара по идентификатору
         /// </summary>

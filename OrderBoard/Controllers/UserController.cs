@@ -5,6 +5,7 @@ using System.Net;
 using OrderBoard.Contracts.Enums;
 using Microsoft.AspNetCore.Authorization;
 using OrderBoard.AppServices.Other.Exceptions;
+using OrderBoard.Contracts.OrderItem;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -34,8 +35,9 @@ namespace OrderBoard.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Change user role in DB")]
+        [HttpPost("{id:guid} Change user role in DB")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SetRole(Guid id, string setRole, CancellationToken cancellationToken)
         { 
             UserRole role;
@@ -66,6 +68,14 @@ namespace OrderBoard.Api.Controllers
                 throw new EntitiesNotFoundException("Пользователь не найден.");
             }
             return StatusCode((int)HttpStatusCode.OK, result);
+        }
+        [HttpPost("Update orderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
+        public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateInputModel model, CancellationToken cancellationToken)
+        {
+            await _userService.UpdateAsync(model, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK);
         }
     }
 }

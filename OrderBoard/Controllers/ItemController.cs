@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.Items.Requests;
 using System.Net;
 
 namespace OrderBoard.Api.Controllers
@@ -20,6 +21,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         public async Task<IActionResult> Post([FromBody] ItemCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _itemService.CreateAsync(model, cancellationToken);
@@ -45,6 +47,21 @@ namespace OrderBoard.Api.Controllers
                 ?? throw new EntitiesNotFoundException("Вы не продаёте никаких товаров.");
             return Ok(result);
         }
+        [HttpPost("Get with pagination")]
+        public async Task<IActionResult> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _itemService.GetItemWithPaginationAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpGet("Get all by categoryId")]
+        [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByCategoryIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _itemService.GetByCategoryIdAsync(id, cancellationToken);
+            return Ok(result);
+        }
+
+
         [HttpPost("Update Item")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)

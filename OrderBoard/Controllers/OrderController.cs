@@ -7,6 +7,7 @@ using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -54,10 +55,14 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
-            var result = await _orderService.GetByIdAsync(id, cancellationToken);
-            if (result == null)
+            var result = await _orderService.GetByIdAsync(id, cancellationToken) 
+                ?? throw new EntitiesNotFoundException("Заказ не найден.");
+            List<OrderItemDataModel> OrderItemList = [];
+            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
+            foreach (var item in OrderItemList) 
             {
-                throw new EntitiesNotFoundException("Заказ не найден.");
+                result.TotalPrice += item.OrderPrice;
+                result.TotalCount += item.Count;
             }
             return Ok(result);
         }
@@ -68,38 +73,27 @@ namespace OrderBoard.Api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
         [HttpGet("Confrim Order")]
-        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfrimOrderById(Guid id, CancellationToken cancellationToken)
         {
-            List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
+            List<OrderItemDataModel> OrderItemList = [];
             OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
-            List<ItemDataModel> ItemList = new List<ItemDataModel>();
-            foreach (var orderItem in OrderItemList)
+            if(OrderItemList == null)
             {
-                var TempItemModel = await _orderItemService.GetItemDataAsync(orderItem.ItemId, cancellationToken);
-                if(TempItemModel.Count >= orderItem.Count)
-                {
-                    TempItemModel.Count += orderItem.Count;
-                    ItemList.Add(TempItemModel);
-                }
-                else
-                {
-                    throw new Exception("Количество товара в заказе больше, чем есть в наличе!");
-                }
+                return StatusCode((int)HttpStatusCode.BadRequest, "Данный заказ пуст!");
             }
-            foreach (var item in ItemList)
-            {
-                await _orderItemService.SetCountAsync(item, cancellationToken);
-            }
+            
+            await _orderItemService.SetCountAsync(OrderItemList, cancellationToken);
+
             var result = await _orderService.ConfrimOrderById(id, cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("Delete Order")]
-        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
         {
-            List<OrderItemDataModel> OrderItemList = new List<OrderItemDataModel>();
+            List<OrderItemDataModel> OrderItemList = [];
             OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
 
             foreach (var OrderItems in OrderItemList)

@@ -69,10 +69,18 @@ namespace OrderBoard.Api.Controllers
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpGet("Delete orderItem by orderItemId")]
+        [HttpPost("Delete orderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _orderItemService.DeleteByIdAsync(id, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK);
+        }
+        [HttpPost("Update orderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateAsync([FromBody] OrderItemUpdateModel model, CancellationToken cancellationToken)
+        {
+            await _orderItemService.UpdateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.OK);
         }
     }

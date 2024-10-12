@@ -1,5 +1,7 @@
-﻿using OrderBoard.Contracts.Items;
+﻿using OrderBoard.AppServices.Other.Specifications;
+using OrderBoard.Contracts.Items;
 using OrderBoard.Domain.Entities;
+using System.Threading;
 
 
 namespace OrderBoard.AppServices.Items.Repositories
@@ -15,7 +17,7 @@ namespace OrderBoard.AppServices.Items.Repositories
         /// <param name="model">Модель.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор добавленной сущности.</returns>
-        Task<Guid> AddAsync(Item model, CancellationToken cancellationToken);
+        Task<Guid?> AddAsync(Item model, CancellationToken cancellationToken);
         /// <summary>
         /// Получает товар по идентификатору.
         /// </summary>
@@ -36,15 +38,19 @@ namespace OrderBoard.AppServices.Items.Repositories
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<Guid> UpdateAsync(Item model, CancellationToken cancellationToken);
+        Task<Guid?> UpdateAsync(Item model, CancellationToken cancellationToken);
         /// <summary>
         /// Удаление товара по идентификатору
         /// </summary>
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task DeleteByIdAsync(Item model, CancellationToken cancellationToken);
+        Task DeleteAsync(Item model, CancellationToken cancellationToken);
         Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken);
         Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken);
+        Task<List<ItemInfoModel>> GetBySpecificationWithPaginationAsync(ISpecification<Item> specification,
+            int take, int? skip, CancellationToken cancellationToken);
+        Task<List<ItemInfoModel>> GetBySpecificationAsync(ISpecification<Item> specification,
+            CancellationToken cancellationToken);
     }
 }
