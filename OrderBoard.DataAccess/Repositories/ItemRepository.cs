@@ -45,7 +45,6 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
         }
-
         public async Task<List<ItemInfoModel>> GetBySpecificationAsync(ISpecification<Item> specification, CancellationToken cancellationToken)
         {
             return await _repository
@@ -54,6 +53,19 @@ namespace OrderBoard.DataAccess.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<Guid?> UpdateAsync(Item model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return model.Id;
+        }
+        public Task DeleteAsync(Item model, CancellationToken cancellationToken)
+        {
+            _repository.DeleteAsync(model, cancellationToken);
+            return Task.CompletedTask;
+        }
+
+
+        //------------------------- Под перенос на спецификацию ----------------------------
         public Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
@@ -79,21 +91,11 @@ namespace OrderBoard.DataAccess.Repositories
         }
         public async Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken)
         {
-                var ItemList = await _repository.GetAll().Where(s => s.UserId == id)
-                    .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken);
+            var ItemList = await _repository.GetAll().Where(s => s.UserId == id)
+                .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
             return ItemList;
-        }
-        public async Task<Guid?> UpdateAsync(Item model, CancellationToken cancellationToken)
-        {
-            await _repository.UpdateAsync(model, cancellationToken);
-            return model.Id;
-        }
-        public Task DeleteAsync(Item model, CancellationToken cancellationToken)
-        {
-            _repository.DeleteAsync(model, cancellationToken);
-            return Task.CompletedTask;
         }
     }
 }

@@ -2,7 +2,6 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderBoard.Api.Controllers;
@@ -10,7 +9,7 @@ using OrderBoard.Api.Middlewares;
 using OrderBoard.AppServices.Other.Validators.Items;
 using OrderBoard.AppServices.Other.Validators.ItemValidator;
 using OrderBoard.AppServices.Other.Validators.OrderItems;
-using OrderBoard.AppServices.Other.Validators.Users;
+using OrderBoard.AppServices.Other.Validators.Orders;
 using OrderBoard.ComponentRegistrator;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.DataAccess;
@@ -87,6 +86,9 @@ namespace OrderBoard.Api
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderItemFromOrderRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderAuthRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderRequestValidator>();
             builder.Services.AddFluentValidationAutoValidation();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

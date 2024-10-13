@@ -29,13 +29,6 @@ namespace OrderBoard.AppServices.Items.Services
         /// <returns>Список товаров</returns>
         Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken);
         /// <summary>
-        /// Получить все товары по идентефикатору категории.
-        /// </summary>
-        /// <param name="id">Идентификатор категории.</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
-        /// <returns>Модель товара.</returns>
-        Task<List<ItemInfoModel>> GetByCategoryIdAsync(Guid? id, CancellationToken cancellationToken);
-        /// <summary>
         /// Обновить товар по идентификатору
         /// </summary>
         /// <param name="id">Идентификатор товара</param>

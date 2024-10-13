@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.Items.Requests;
 using OrderBoard.Contracts.OrderItem;
+using OrderBoard.Contracts.OrderItem.Requests;
 
 namespace OrderBoard.AppServices.Repository.Services
 {
@@ -50,5 +52,15 @@ namespace OrderBoard.AppServices.Repository.Services
         Task DeleteForOrderDeleteAsync(OrderItemDataModel OrderItemTempModel, CancellationToken cancellationToken);
         Task SetCountAsync(List<OrderItemDataModel> orderItemList, CancellationToken cancellationToken);
         Task UpdateAsync(OrderItemUpdateModel model, CancellationToken cancellationToken);
+
+
+
+        /// <summary>
+        /// Получить все товары с пагинацией и ограничениями.
+        /// </summary>
+        /// <param name="model">Входящие ограничения</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Список товаров</returns>
+        Task<List<OrderItemInfoModel>> GetItemWithPaginationAsync(SearchOrderItemFromOrderRequest request, CancellationToken cancellationToken);
     }
 }

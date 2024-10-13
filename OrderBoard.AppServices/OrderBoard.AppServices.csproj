@@ -19,11 +19,4 @@
     <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="OrderItem\SpecificationContext\Specifications\" />
-    <Folder Include="OrderItem\SpecificationContext\Builders\" />
-    <Folder Include="Orders\SpecificationContext\Specifications\" />
-    <Folder Include="Orders\SpecificationContext\Builders\" />
-  </ItemGroup>
-
 </Project>

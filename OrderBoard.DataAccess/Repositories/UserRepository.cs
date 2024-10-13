@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using OrderBoard.AppServices.Other.Specifications;
 using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Enums;
+using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.Domain.Entities;
 using OrderBoard.Infrastructure.Repository;
@@ -27,6 +29,46 @@ namespace OrderBoard.DataAccess.Repositories
             return model.Id;
         }
 
+        public async Task<List<UserInfoModel>> GetBySpecificationWithPaginationAsync(
+            ISpecification<EntUser> specification, int take, int? skip, CancellationToken cancellationToken)
+        {
+            var query = _repository
+                .GetAll()
+                .OrderBy(item => item.Id)
+                .Where(specification.PredicateExpression);
+
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+
+            return await query
+                .Take(take)
+                .ProjectTo<UserInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+        }
+        public async Task<List<UserInfoModel>> GetBySpecificationAsync(ISpecification<EntUser> specification, CancellationToken cancellationToken)
+        {
+            return await _repository
+                .GetByPredicate(specification.PredicateExpression)
+                .ProjectTo<UserInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Guid?> UpdateAsync(EntUser model, CancellationToken cancellationToken)
+        {
+            await _repository.UpdateAsync(model, cancellationToken);
+            return model.Id;
+        }
+        public Task DeleteByIdAsync(EntUser model, CancellationToken cancellationToken)
+        {
+            _repository.DeleteAsync(model, cancellationToken);
+            return Task.CompletedTask;
+        }
+
+
+
+        //------------------------- Под перенос на спецификацию ----------------------------
         public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
@@ -46,17 +88,6 @@ namespace OrderBoard.DataAccess.Repositories
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<UserDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
-        }
-
-        public async Task<Guid?> UpdateAsync(EntUser model, CancellationToken cancellationToken)
-        {
-            await _repository.UpdateAsync(model, cancellationToken);
-            return model.Id;
-        }
-        public Task DeleteByIdAsync(EntUser model, CancellationToken cancellationToken)
-        {
-            _repository.DeleteAsync(model, cancellationToken);
-            return Task.CompletedTask;
         }
     }
 }

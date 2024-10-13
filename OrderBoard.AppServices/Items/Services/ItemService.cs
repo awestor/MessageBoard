@@ -104,16 +104,8 @@ namespace OrderBoard.AppServices.Items.Services
 
         public Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
         {
-            var claims = _httpContextAccessor.HttpContext.User.Claims;
-            var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var specification = _itemSpecificationBuilder.Build(request, new Guid(claimsId));
+            var specification = _itemSpecificationBuilder.Build(request);
             return _itemRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
-        }
-
-        public Task<List<ItemInfoModel>> GetByCategoryIdAsync(Guid? categoryId, CancellationToken cancellationToken)
-        {
-            var specification = _itemSpecificationBuilder.Build(categoryId);
-            return _itemRepository.GetBySpecificationAsync(specification, cancellationToken);
         }
     }
 }

@@ -18,6 +18,8 @@ using OrderBoard.AppServices.Files.Services;
 using OrderBoard.AppServices.Files.Repositories;
 using OrderBoard.AppServices.Items.SpecificationContext.Builders;
 using OrderBoard.AppServices.Other.Specifications;
+using OrderBoard.AppServices.OrderItems.SpecificationContext.Builders;
+using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
 namespace OrderBoard.ComponentRegistrator
 {
     public static class ComponentRegistrator
@@ -42,6 +44,8 @@ namespace OrderBoard.ComponentRegistrator
 
 
             services.AddScoped<IItemSpecificationBuilder, ItemSpecificationBuilder>();
+            services.AddScoped<IOrderItemSpecificationBuilder, OrderItemSpecificationBuilder>();
+            services.AddScoped<IOrderSpecificationBuilder, OrderSpecificationBuilder>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 

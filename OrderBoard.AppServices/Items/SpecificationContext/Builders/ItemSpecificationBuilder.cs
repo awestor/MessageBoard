@@ -7,14 +7,9 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
 {
     public class ItemSpecificationBuilder : IItemSpecificationBuilder
     {
-        public ISpecification<Item> Build(SearchItemForPaginationRequest request, Guid userId)
+        public ISpecification<Item> Build(SearchItemForPaginationRequest request)
         {
-            var specification = Specification<Item>.FromPredicate(item => item.UserId != userId);
-
-            if (request.CategoryId != null || request.CategoryId != Guid.Empty)
-            {
-                specification = specification.And(new ByCategorySpecification(request.CategoryId));
-            }
+            var specification = Specification<Item>.FromPredicate(item => item.CategoryId == request.CategoryId);
 
             if (request.MinPrice.HasValue)
             {
@@ -25,16 +20,7 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
             {
                 specification = specification.And(new MaxPriceSpecification(request.MaxPrice.Value));
             }
-
             return specification;
         }
-
-        /// <inheritdoc />
-        public ISpecification<Item> Build(Guid? categoryId)
-        {
-            return new ByCategorySpecification(categoryId);
-        }
     }
-
-   
 }

@@ -6,6 +6,7 @@ using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
+using OrderBoard.Contracts.Orders.Requests;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
 
@@ -53,7 +54,7 @@ namespace OrderBoard.Api.Controllers
         /// <returns></returns>
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var result = await _orderService.GetByIdAsync(id, cancellationToken) 
                 ?? throw new EntitiesNotFoundException("Заказ не найден.");
@@ -66,15 +67,32 @@ namespace OrderBoard.Api.Controllers
             }
             return Ok(result);
         }
+
+
+        [HttpPost("GetAllByUserIdAsync")]
+        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllByUserIdAsync(SearchOrderRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _orderService.GetOrderWithPaginationAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpPost("GetAllYourOrderAsync")]
+        [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllByIdAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _orderService.GetOrderWithPaginationAuthAsync(request, cancellationToken);
+            return Ok(result);
+        }
+
         /// <summary>
         /// Подтверждение заказа
         /// </summary>
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpGet("Confrim Order")]
+        [HttpPost("Confrim Order")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ConfrimOrderById(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> ConfrimOrderByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             List<OrderItemDataModel> OrderItemList = [];
             OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);

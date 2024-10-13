@@ -57,11 +57,14 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var result = await _orderItemService.GetAllByOrderIdAsync(id, cancellationToken);
-            if (result == null)
-            {
-                throw new EntitiesNotFoundException("Заказ не найден.");
-            }
             return Ok(result);
+        }
+        [HttpPost("Update orderItem")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateAsync([FromBody] OrderItemUpdateModel model, CancellationToken cancellationToken)
+        {
+            await _orderItemService.UpdateAsync(model, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK);
         }
         /// <summary>
         /// Удаление поля заказа
@@ -74,13 +77,6 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             await _orderItemService.DeleteByIdAsync(id, cancellationToken);
-            return StatusCode((int)HttpStatusCode.OK);
-        }
-        [HttpPost("Update orderItem")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateAsync([FromBody] OrderItemUpdateModel model, CancellationToken cancellationToken)
-        {
-            await _orderItemService.UpdateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.OK);
         }
     }

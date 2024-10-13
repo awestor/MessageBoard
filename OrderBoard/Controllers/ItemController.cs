@@ -53,14 +53,6 @@ namespace OrderBoard.Api.Controllers
             var result = await _itemService.GetItemWithPaginationAsync(request, cancellationToken);
             return Ok(result);
         }
-        [HttpGet("Get all by categoryId")]
-        [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByCategoryIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            var result = await _itemService.GetByCategoryIdAsync(id, cancellationToken);
-            return Ok(result);
-        }
-
 
         [HttpPost("Update Item")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]

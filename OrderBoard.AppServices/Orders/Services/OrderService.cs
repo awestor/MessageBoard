@@ -7,6 +7,8 @@ using OrderBoard.AppServices.Users.Repository;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Domain.Entities;
 using System.Security.Claims;
+using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
+using OrderBoard.Contracts.Orders.Requests;
 
 namespace OrderBoard.AppServices.Orders.Services
 {
@@ -16,15 +18,16 @@ namespace OrderBoard.AppServices.Orders.Services
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOrderSpecificationBuilder _orderSpecificationBuilder;
 
         public OrderService(IOrderRepository orderRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
-            /*IOrderItemService orderItemService,*/ IUserRepository userRepository)
+            IUserRepository userRepository, IOrderSpecificationBuilder orderSpecificationBuilder)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _configuration = configuration;
-            //_orderItemService = orderItemService;
+            _orderSpecificationBuilder = orderSpecificationBuilder;
             _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
@@ -33,37 +36,38 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<Guid> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken)
+        public Task<Guid?> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken)
         {
             var OrderModel = _orderRepository.GetByUserIdAsync(model.UserId, cancellationToken);
 
             if (OrderModel != null)
             {
-                throw new Exception("У данного пользователя уже существует наоплаченный заказ. Его Id:" + OrderModel.Id);
+                throw new Exception("У данного пользователя уже существует наоплаченный заказ." +
+                    " Прежде чем создавать новый заказ оплатите текущий.");
             }
             var entity = _mapper.Map<OrderCreateModel, Order>(model);
 
             return _orderRepository.AddAsync(entity, cancellationToken);
         }
-        public async Task<Guid> CreateByAuthAsync(CancellationToken cancellationToken)
+        public async Task<Guid?> CreateByAuthAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
-            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrWhiteSpace(claimId))
-            {
-                throw new Exception("Непредвиденная ошибка");
-            }
-            var id = Guid.Parse(claimId);
-            var OrderModel = await _orderRepository.GetByUserIdAsync(id, cancellationToken);
-
+            var claimId = (claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value) 
+                ?? throw new Exception("Авторизуйтесь повторно");
+            var userId = Guid.Parse(claimId);
+            var OrderModel = await _orderRepository.GetByUserIdAsync(userId, cancellationToken);
             if (OrderModel != null)
             {
-                throw new Exception("У данного пользователя уже существует наоплаченный заказ. Его Id:" + OrderModel.Id);
+                throw new Exception("У данного пользователя уже существует наоплаченный заказ." +
+                    " Прежде чем создавать новый заказ оплатите текущий.");
             }
-            var model = new OrderCreateModel();
-            model.UserId = id;
-            var entity = _mapper.Map<OrderCreateModel, Order>(model);
-            return await _orderRepository.AddAsync(entity, cancellationToken);
+            var ocm = new OrderCreateModel
+            {
+                UserId = userId
+            };
+            var orderId = await CreateAsync(ocm, cancellationToken);
+
+            return orderId;
         }
         /// <summary>
         /// Получение заказа по id
@@ -71,7 +75,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<OrderInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _orderRepository.GetByIdAsync(id, cancellationToken); ;
         }
@@ -81,7 +85,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<OrderDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _orderRepository.GetForUpdateAsync(id, cancellationToken);
         }
@@ -91,12 +95,12 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<Guid> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken)
+        public Task<Guid?> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             return _orderRepository.UpdateAsync(entity, cancellationToken);
         }
-        public async Task DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
@@ -109,7 +113,7 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Guid> ConfrimOrderById(Guid id, CancellationToken cancellationToken)
+        public async Task<Guid?> ConfrimOrderById(Guid? id, CancellationToken cancellationToken)
         {
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             if (model == null)
@@ -123,12 +127,45 @@ namespace OrderBoard.AppServices.Orders.Services
             return result;
         }
 
-        public async Task<OrderDataModel> GetOrderIdByUserIdAsync(CancellationToken cancellationToken)
+        public async Task<Guid?> GetOrderIdByUserIdAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = (claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value) 
+                ?? throw new Exception("Авторизуйтесь повторно");
+            var OrderModel = await _orderRepository.GetByUserIdAsync(new Guid(claimId), cancellationToken);
+            if (OrderModel == null)
+            {
+                var newResult = await CreateForOrderItemAsync(new Guid(claimId), cancellationToken);
+                return newResult;
+            }
+            var result = OrderModel.Id;
+            return result;
+        }
+        public async Task<Guid?> CreateForOrderItemAsync(Guid? userId, CancellationToken cancellationToken)
+        {
+            var ocm = new OrderDataModel
+            {
+                UserId = userId,
+                OrderStatus = Contracts.Enums.OrderStatus.Draft
+            };
+            var entity = _mapper.Map<OrderDataModel, Order>(ocm);
+
+            return await _orderRepository.AddAsync(entity, cancellationToken);
+        }
+
+        public Task<List<OrderInfoModel>> GetOrderWithPaginationAsync(SearchOrderRequest request, CancellationToken cancellationToken)
+        {
+            var specification = _orderSpecificationBuilder.Build(request);
+            return _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+        }
+        public Task<List<OrderInfoModel>> GetOrderWithPaginationAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            var OrderModel = await _orderRepository.GetByUserIdAsync(new Guid(claimId), cancellationToken);
-            return OrderModel;
+            var modRequest = _mapper.Map<SearchOrderAuthRequest, SearchOrderRequest>(request);
+            modRequest.UserId = new Guid(claimId);
+            var specification = _orderSpecificationBuilder.Build(modRequest);
+            return _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
         }
     }
 }
