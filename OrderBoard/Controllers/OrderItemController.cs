@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.Contracts.OrderItem;
+using OrderBoard.Contracts.OrderItem.Requests;
 using System.Net;
 
 namespace OrderBoard.Api.Controllers
@@ -52,13 +53,19 @@ namespace OrderBoard.Api.Controllers
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpGet("Get all orderItem's by orderId")]
+        [HttpPost("Get all orderItem's by orderId")]
         [ProducesResponseType(typeof(OrderItemInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllByOrderIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllByWithPaginationIdAsync(SearchOrderItemFromOrderRequest request, CancellationToken cancellationToken)
         {
-            var result = await _orderItemService.GetAllByOrderIdAsync(id, cancellationToken);
+            var result = await _orderItemService.GetOrderItemWithPaginationAsync(request, cancellationToken);
             return Ok(result);
         }
+        /// <summary>
+        /// Обновление поля заказа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("Update orderItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateAsync([FromBody] OrderItemUpdateModel model, CancellationToken cancellationToken)

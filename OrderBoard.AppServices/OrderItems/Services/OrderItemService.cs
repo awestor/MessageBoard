@@ -141,7 +141,8 @@ namespace OrderBoard.AppServices.Users.Services
             return;
         }
 
-        public Task<List<OrderItemInfoModel>> GetItemWithPaginationAsync(SearchOrderItemFromOrderRequest request, CancellationToken cancellationToken)
+        public Task<List<OrderItemInfoModel>> GetOrderItemWithPaginationAsync(SearchOrderItemFromOrderRequest request,
+            CancellationToken cancellationToken)
         {
             var specification = _orderItemSpecificationBuilder.Build(request);
             return _orderItemRepository.GetBySpecificationWithPaginationAsync

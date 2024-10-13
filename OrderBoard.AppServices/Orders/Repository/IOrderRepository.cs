@@ -50,7 +50,7 @@ namespace OrderBoard.AppServices.Orders.Repository
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель заказа</returns>
         Task<OrderDataModel> GetByUserIdAsync(Guid? id, CancellationToken cancellationToken);
-        Task<List<OrderInfoModel>> GetBySpecificationWithPaginationAsync(ISpecification<Order> specification,
+        Task<List<OrderDataModel>> GetBySpecificationWithPaginationAsync(ISpecification<Order> specification,
             int take, int? skip, CancellationToken cancellationToken);
     }
 }

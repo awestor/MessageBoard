@@ -22,18 +22,18 @@ namespace OrderBoard.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public async Task<Guid> AddAsync(Order model, CancellationToken cancellationToken)
+        public async Task<Guid?> AddAsync(Order model, CancellationToken cancellationToken)
         {
             await _repository.AddAsync(model, cancellationToken);
             return model.Id;
         }
 
-        public async Task<List<OrderInfoModel>> GetBySpecificationWithPaginationAsync(
+        public async Task<List<OrderDataModel>> GetBySpecificationWithPaginationAsync(
             ISpecification<Order> specification, int take, int? skip, CancellationToken cancellationToken)
         {
             var query = _repository
                 .GetAll()
-                .OrderBy(item => item.Id)
+                .OrderBy(order => order.Id)
                 .Where(specification.PredicateExpression);
 
             if (skip.HasValue)
@@ -43,7 +43,7 @@ namespace OrderBoard.DataAccess.Repositories
 
             return await query
                 .Take(take)
-                .ProjectTo<OrderInfoModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<OrderDataModel>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
         }
         public async Task<List<OrderInfoModel>> GetBySpecificationAsync(ISpecification<Order> specification, CancellationToken cancellationToken)
@@ -54,7 +54,7 @@ namespace OrderBoard.DataAccess.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Guid> UpdateAsync(Order model, CancellationToken cancellationToken)
+        public async Task<Guid?> UpdateAsync(Order model, CancellationToken cancellationToken)
         {
             await _repository.UpdateAsync(model, cancellationToken);
             return model.Id;
@@ -69,21 +69,22 @@ namespace OrderBoard.DataAccess.Repositories
 
 
         //------------------------- Под перенос на спецификацию ----------------------------
-        public Task<OrderInfoModel> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<OrderInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public Task<OrderDataModel> GetForUpdateAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<OrderDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public Task<OrderDataModel> GetByUserIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<OrderDataModel> GetByUserIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => (s.UserId == id) && (s.OrderStatus != Contracts.Enums.OrderStatus.Ordered))
+                .OrderBy(orderItem => orderItem.CreatedAt)
                 .ProjectTo<OrderDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }

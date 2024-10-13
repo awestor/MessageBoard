@@ -1,4 +1,5 @@
 ﻿using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.OrderItem.Requests;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.Orders.Requests;
@@ -28,13 +29,6 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
-        /// Получение модели для обновления
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<OrderDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
-        /// <summary>
         /// Обновление записи заказа
         /// </summary>
         /// <param name="model"></param>
@@ -48,6 +42,13 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
         Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
+        /// <summary>
+        /// Удаление заказа по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор товара</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task DeleteChildByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Подтверждение заказа
         /// </summary>
@@ -73,5 +74,6 @@ namespace OrderBoard.AppServices.Orders.Services
         Task<List<OrderInfoModel>> GetOrderWithPaginationAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken);
 
         Task<Guid?> CreateForOrderItemAsync(Guid? userId, CancellationToken cancellationToken);
+        Task<OrderInfoModel> SetTotalInfoAsync(OrderDataModel? model, Guid? id, CancellationToken cancellationToken);
     }
 }

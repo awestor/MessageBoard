@@ -31,7 +31,7 @@ namespace OrderBoard.DataAccess.Repositories
         {
             var query = _repository
                 .GetAll()
-                .OrderBy(item => item.Id)
+                .OrderBy(orderItem => orderItem.Id)
                 .Where(specification.PredicateExpression);
 
             if (skip.HasValue)

@@ -9,12 +9,15 @@ using OrderBoard.Domain.Entities;
 using System.Security.Claims;
 using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
 using OrderBoard.Contracts.Orders.Requests;
+using OrderBoard.Contracts.OrderItem;
+using OrderBoard.AppServices.Repository.Repository;
 
 namespace OrderBoard.AppServices.Orders.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -22,13 +25,15 @@ namespace OrderBoard.AppServices.Orders.Services
 
         public OrderService(IOrderRepository orderRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
-            IUserRepository userRepository, IOrderSpecificationBuilder orderSpecificationBuilder)
+            IUserRepository userRepository, IOrderSpecificationBuilder orderSpecificationBuilder,
+            IOrderItemRepository orderItemRepository)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _configuration = configuration;
             _orderSpecificationBuilder = orderSpecificationBuilder;
             _httpContextAccessor = httpContextAccessor;
+            _orderItemRepository = orderItemRepository;
         }
         /// <summary>
         /// Добавление нового заказа
@@ -36,9 +41,9 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<Guid?> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken)
+        public async Task<Guid?> CreateAsync(OrderCreateModel model, CancellationToken cancellationToken)
         {
-            var OrderModel = _orderRepository.GetByUserIdAsync(model.UserId, cancellationToken);
+            var OrderModel = await _orderRepository.GetByUserIdAsync(model.UserId, cancellationToken);
 
             if (OrderModel != null)
             {
@@ -47,7 +52,7 @@ namespace OrderBoard.AppServices.Orders.Services
             }
             var entity = _mapper.Map<OrderCreateModel, Order>(model);
 
-            return _orderRepository.AddAsync(entity, cancellationToken);
+            return await _orderRepository.AddAsync(entity, cancellationToken);
         }
         public async Task<Guid?> CreateByAuthAsync(CancellationToken cancellationToken)
         {
@@ -75,19 +80,12 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            return _orderRepository.GetByIdAsync(id, cancellationToken); ;
-        }
-        /// <summary>
-        /// Получение модели заказа для обновления
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<OrderDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            return _orderRepository.GetForUpdateAsync(id, cancellationToken);
+            var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken)
+            ?? throw new EntitiesNotFoundException("Заказ не найден.");
+            var result = await SetTotalInfoAsync(model, id, cancellationToken);
+            return result;
         }
         /// <summary>
         /// Обновление полей заказа
@@ -102,9 +100,23 @@ namespace OrderBoard.AppServices.Orders.Services
         }
         public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
+            await DeleteChildByIdAsync(id, cancellationToken);
+
             var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
+            return;
+        }
+        public async Task DeleteChildByIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            List<OrderItemDataModel> OrderItemList = [];
+            OrderItemList = await _orderItemRepository.GetAllDataByOrderIdAsync(id, cancellationToken);
+
+            foreach (var OrderItems in OrderItemList)
+            {
+                var tempMapedModel = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItems);
+                await _orderItemRepository.DeleteAsync(tempMapedModel, cancellationToken);
+            }
             return;
         }
         /// <summary>
@@ -146,26 +158,58 @@ namespace OrderBoard.AppServices.Orders.Services
             var ocm = new OrderDataModel
             {
                 UserId = userId,
-                OrderStatus = Contracts.Enums.OrderStatus.Draft
+                OrderStatus = Contracts.Enums.OrderStatus.Draft,
+                CreatedAt = DateTime.UtcNow
             };
             var entity = _mapper.Map<OrderDataModel, Order>(ocm);
 
             return await _orderRepository.AddAsync(entity, cancellationToken);
         }
 
-        public Task<List<OrderInfoModel>> GetOrderWithPaginationAsync(SearchOrderRequest request, CancellationToken cancellationToken)
+        public async Task<List<OrderInfoModel>> GetOrderWithPaginationAsync(SearchOrderRequest request, CancellationToken cancellationToken)
         {
             var specification = _orderSpecificationBuilder.Build(request);
-            return _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+            var modelList = await _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+            List<OrderInfoModel> result = [];
+
+            foreach (var order in modelList)
+            {
+                result.Insert(0, await SetTotalInfoAsync(order, order.Id, cancellationToken));
+            }
+
+            return result;
         }
-        public Task<List<OrderInfoModel>> GetOrderWithPaginationAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
+        public async Task<List<OrderInfoModel>> GetOrderWithPaginationAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var modRequest = _mapper.Map<SearchOrderAuthRequest, SearchOrderRequest>(request);
             modRequest.UserId = new Guid(claimId);
             var specification = _orderSpecificationBuilder.Build(modRequest);
-            return _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+            var modelList = await _orderRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+            List<OrderInfoModel> result = [];
+            
+            foreach (var order in modelList)
+            {
+                result.Insert(0, await SetTotalInfoAsync(order, order.Id, cancellationToken));
+            }
+
+            return result;
+        }
+
+        public async Task<OrderInfoModel> SetTotalInfoAsync(OrderDataModel? model, Guid? id, CancellationToken cancellationToken)
+        {
+            List<OrderItemDataModel> OrderItemList = [];
+            OrderItemList = await _orderItemRepository.GetAllDataByOrderIdAsync(id, cancellationToken);
+            var result = _mapper.Map<OrderDataModel, OrderInfoModel>(model); ;
+            result.TotalCount  = 0;
+            result.TotalPrice  = 0;
+            foreach (var item in OrderItemList)
+            {
+                result.TotalPrice += item.OrderPrice;
+                result.TotalCount += item.Count;
+            }
+            return result;
         }
     }
 }

@@ -7,6 +7,7 @@ using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.Orders.Requests;
+using System.Collections.Generic;
 using System.Net;
 using System.Reflection.Metadata.Ecma335;
 
@@ -56,15 +57,7 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var result = await _orderService.GetByIdAsync(id, cancellationToken) 
-                ?? throw new EntitiesNotFoundException("Заказ не найден.");
-            List<OrderItemDataModel> OrderItemList = [];
-            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
-            foreach (var item in OrderItemList) 
-            {
-                result.TotalPrice += item.OrderPrice;
-                result.TotalCount += item.Count;
-            }
+            var result = await _orderService.GetByIdAsync(id, cancellationToken);
             return Ok(result);
         }
 
@@ -111,14 +104,6 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
         {
-            List<OrderItemDataModel> OrderItemList = [];
-            OrderItemList = await _orderItemService.GetAllByOrderIdInDataModelAsync(id, cancellationToken);
-
-            foreach (var OrderItems in OrderItemList)
-            {
-                await _orderItemService.DeleteForOrderDeleteAsync(OrderItems, cancellationToken);
-            }
-
             await _orderService.DeleteByIdAsync(id, cancellationToken);
             return Ok("Заказ был удалён");
         }

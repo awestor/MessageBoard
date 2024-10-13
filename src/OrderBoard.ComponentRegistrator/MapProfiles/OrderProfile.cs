@@ -23,6 +23,7 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
                 .ForMember(s => s.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
             CreateMap<SearchOrderAuthRequest, SearchOrderRequest>(MemberList.None);
+            CreateMap<OrderDataModel, OrderInfoModel>(MemberList.None);
         }
     }
 }
