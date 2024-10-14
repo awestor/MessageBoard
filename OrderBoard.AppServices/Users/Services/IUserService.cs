@@ -48,7 +48,7 @@ namespace OrderBoard.AppServices.User.Services
         /// <param name="role">Роль</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Идентификатор пользователя</returns>
-        Task<Guid?> SetRoleAsync(Guid? id, UserRole role, CancellationToken cancellationToken);
+        Task<Guid?> SetRoleAsync(Guid? id, string setRole, CancellationToken cancellationToken);
         /// <summary>
         /// Получить токен для авторизации
         /// </summary>

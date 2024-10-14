@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderBoard.Api.Controllers;
 using OrderBoard.Api.Middlewares;
+using OrderBoard.AppServices.Other.Validators.Categorys;
 using OrderBoard.AppServices.Other.Validators.Items;
 using OrderBoard.AppServices.Other.Validators.ItemValidator;
 using OrderBoard.AppServices.Other.Validators.OrderItems;
@@ -82,6 +83,9 @@ namespace OrderBoard.Api
             builder.Services.AddDbContext<OrderBoardDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString")));
             
             builder.Services.AddMvc();
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchCategoryValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();

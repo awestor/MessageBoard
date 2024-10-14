@@ -17,9 +17,10 @@ using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Files.Services;
 using OrderBoard.AppServices.Files.Repositories;
 using OrderBoard.AppServices.Items.SpecificationContext.Builders;
-using OrderBoard.AppServices.Other.Specifications;
 using OrderBoard.AppServices.OrderItems.SpecificationContext.Builders;
 using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
+using OrderBoard.AppServices.Categories.SpecificationContext.Builders;
+using FluentValidation;
 namespace OrderBoard.ComponentRegistrator
 {
     public static class ComponentRegistrator
@@ -46,10 +47,20 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IItemSpecificationBuilder, ItemSpecificationBuilder>();
             services.AddScoped<IOrderItemSpecificationBuilder, OrderItemSpecificationBuilder>();
             services.AddScoped<IOrderSpecificationBuilder, OrderSpecificationBuilder>();
+            services.AddScoped<ICategorySpecificationBuilder, CategorySpecificationBuilder>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
+
+
+
+
+
+
+
+
+
 
             return services;
         }

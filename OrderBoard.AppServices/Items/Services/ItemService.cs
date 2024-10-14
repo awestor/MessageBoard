@@ -32,10 +32,10 @@ namespace OrderBoard.AppServices.Items.Services
         public Task<Guid?> CreateAsync(ItemCreateModel model, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
-            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new Exception("Пожалуйста, авторизируйтесь заново.");
             var entity = _mapper.Map<ItemCreateModel, Item>(model);
-            entity.UserId = new Guid(claimId);
+            entity.UserId = Guid.Parse(claimId);
             return _itemRepository.AddAsync(entity, cancellationToken);
         }
         public async Task<Guid?> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
@@ -46,8 +46,7 @@ namespace OrderBoard.AppServices.Items.Services
             var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (newModel.UserId.ToString() != claimsId)
             {
-                var exeption = HttpStatusCode.Forbidden;
-                throw new Exception(exeption.ToString() + "Отказано в праве доступа.");
+                throw new Exception(HttpStatusCode.Forbidden.ToString() + "Отказано в праве доступа.");
             }
 
             if (model.Description != null) newModel.Description = model.Description;
@@ -67,8 +66,7 @@ namespace OrderBoard.AppServices.Items.Services
             var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (model.UserId.ToString() != claimsId)
             {
-                var exeption = HttpStatusCode.Forbidden;
-                throw new Exception(exeption.ToString() + "Отказано в праве доступа.");
+                throw new Exception(HttpStatusCode.Forbidden.ToString() + "Отказано в праве доступа.");
             }
 
             var entity = _mapper.Map<ItemDataModel, Item>(model);
@@ -76,36 +74,43 @@ namespace OrderBoard.AppServices.Items.Services
             return;
         }
 
-        public Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            return _itemRepository.GetByIdAsync(id, cancellationToken);
+            var result = await _itemRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Товар не найден");
+            return result;
         }
 
-        public Task<ItemDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<ItemDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
         {
-            return _itemRepository.GetForUpdateAsync(id, cancellationToken);
+            var result = await _itemRepository.GetForUpdateAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Товар не найден");
+            return result;
         }
         public async Task<Guid?> UpdateAsync(ItemDataModel model, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<ItemDataModel, Item>(model);
             return await _itemRepository.UpdateAsync(entity, cancellationToken);
         }
-        public async Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            return await _itemRepository.GetPriceAsync(id, cancellationToken);
-        }
 
         public async Task<List<ItemInfoModel>> GetAllItemAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
-            var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new Exception("Пожалуйста, авторизируйтесь заново.");
             return await _itemRepository.GetAllItemAsync(new Guid(claimsId), cancellationToken); ;
         }
 
-        public Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
+        public async Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
         {
             var specification = _itemSpecificationBuilder.Build(request);
-            return _itemRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+            return await _itemRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
+        }
+
+        public async Task<List<ItemInfoModel>> GetAllItemByNameAsync(SearchItemByNameRequest request, CancellationToken cancellationToken)
+        {
+            var specification = _itemSpecificationBuilder.Build(request);
+            return await _itemRepository.GetBySpecificationWithPaginationAsync(specification, request.Take, request.Skip, cancellationToken);
         }
     }
 }

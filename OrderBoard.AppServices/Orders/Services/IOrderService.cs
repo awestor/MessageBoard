@@ -29,13 +29,6 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
-        /// Обновление записи заказа
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        Task<Guid?> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken);
-        /// <summary>
         /// Удаление заказа по идентификатору
         /// </summary>
         /// <param name="id">Идентификатор товара</param>

@@ -22,5 +22,21 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
             }
             return specification;
         }
+
+        public ISpecification<Item> Build(SearchItemByNameRequest request)
+        {
+            var specification = Specification<Item>.FromPredicate(item => item.Name == request.Name);
+
+            if (request.MinPrice.HasValue)
+            {
+                specification = specification.And(new MinPriceSpecification(request.MinPrice.Value));
+            }
+
+            if (request.MaxPrice.HasValue)
+            {
+                specification = specification.And(new MaxPriceSpecification(request.MaxPrice.Value));
+            }
+            return specification;
+        }
     }
 }

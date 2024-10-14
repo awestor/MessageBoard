@@ -1,5 +1,7 @@
-﻿using OrderBoard.Contracts.Categories;
+﻿using OrderBoard.AppServices.Other.Specifications;
+using OrderBoard.Contracts.Categories;
 using OrderBoard.Domain.Entities;
+using System.Threading;
 
 namespace OrderBoard.AppServices.Categories.Repositories
 {
@@ -21,9 +23,13 @@ namespace OrderBoard.AppServices.Categories.Repositories
         /// <param name="id">Идентификатор категории.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель категории.</returns>
-        Task<CategoryInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
-        Task<CategoryDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
+        //Task<CategoryInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
+        Task<CategoryDataModel> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken);
         Task UpdateAsync(Category model, CancellationToken cancellationToken);
         Task DeleteByIdAsync(Category model, CancellationToken cancellationToken);
+        Task<CategoryInfoModel> GetBySpecificationAsync(ISpecification<Category> specification,
+            CancellationToken cancellationToken);
+        Task<List<CategoryInfoModel>> GetBySpecificationWithPaginationAsync(ISpecification<Category> specification,
+            int Take, int? Skip, CancellationToken cancellationToken);
     }
 }

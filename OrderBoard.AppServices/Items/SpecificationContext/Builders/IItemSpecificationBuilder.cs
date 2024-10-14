@@ -12,5 +12,7 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
         /// <param name="request">Запрос.</param>
         /// <returns>Спецификация.</returns>
         ISpecification<Item> Build(SearchItemForPaginationRequest request);
+        ISpecification<Item> Build(SearchItemByNameRequest request);
+        
     }
 }

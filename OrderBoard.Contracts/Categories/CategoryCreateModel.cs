@@ -14,5 +14,9 @@
         /// Описание.
         /// </summary>
         public string? Description { get; set; }
+        /// <summary>
+        /// Идентификатор родителя
+        /// </summary>
+        public Guid? ParentId { get; set; }
     }
 }

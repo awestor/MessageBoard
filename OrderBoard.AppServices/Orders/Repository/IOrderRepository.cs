@@ -16,19 +16,12 @@ namespace OrderBoard.AppServices.Orders.Repository
         /// <returns>Идентификатор заказа</returns>
         Task<Guid?> AddAsync(Order model, CancellationToken cancellationToken);
         /// <summary>
-        /// Получение по идентификатору
-        /// </summary>
-        /// <param name="id">Идентификатор заказа</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
-        /// <returns>Модель заказа</returns>
-        Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
-        /// <summary>
         /// Вернуть для обновления
         /// </summary>
         /// <param name="id">Идентификатор заказа</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель заказа</returns>
-        Task<OrderDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
+        Task<OrderDataModel?> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
         /// Обновление заказа
         /// </summary>
@@ -49,7 +42,7 @@ namespace OrderBoard.AppServices.Orders.Repository
         /// <param name="id">Идентификатор пользователя</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель заказа</returns>
-        Task<OrderDataModel> GetByUserIdAsync(Guid? id, CancellationToken cancellationToken);
+        Task<OrderDataModel?> GetByUserIdAsync(Guid? id, CancellationToken cancellationToken);
         Task<List<OrderDataModel>> GetBySpecificationWithPaginationAsync(ISpecification<Order> specification,
             int take, int? skip, CancellationToken cancellationToken);
     }

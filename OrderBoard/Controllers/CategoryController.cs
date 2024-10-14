@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Categories.Services;
+using OrderBoard.Contracts.BasePagination;
 using OrderBoard.Contracts.Categories;
+using OrderBoard.Contracts.Categories.Requests;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Domain.Entities;
 using System.Net;
@@ -27,13 +29,30 @@ namespace OrderBoard.Api.Controllers
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 
-        [HttpGet("{id:guid}Get by Id")]
+        [HttpGet("{id:guid}Get category by Id")]
         [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var result = await _categoryService.GetByIdAsync(id, cancellationToken);
             return Ok(result);
         }
+
+        [HttpGet("Get category by Name")]
+        [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByNameAsync(SearchCategoryByNameRequest name, CancellationToken cancellationToken)
+        {
+            var result = await _categoryService.GetByNameAsync(name, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost("Get all category")]
+        [ProducesResponseType(typeof(List<CategoryInfoModel>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetById([FromBody] SearchCategoryRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _categoryService.GetAllByRequestAsync(request, cancellationToken);
+            return Ok(result);
+        }
+
         [HttpPost("Update category by Id")]
         [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateById([FromBody] CategoryDataModel model, CancellationToken cancellationToken)

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Categories\SpecificationContext\Specifications\" />
+  </ItemGroup>
+
 </Project>

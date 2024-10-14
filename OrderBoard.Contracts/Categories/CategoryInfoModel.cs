@@ -8,15 +8,15 @@
         /// <summary>
         /// Дата создания категории, хранящейся в базе
         /// </summary>
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         /// <summary>
         /// Имя категории.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
         /// Описание категории.
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

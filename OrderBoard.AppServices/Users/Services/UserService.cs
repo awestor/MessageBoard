@@ -79,8 +79,18 @@ namespace OrderBoard.AppServices.Users.Services
             _userRepository.DeleteByIdAsync(entity, cancellationToken);
             return;
         }
-        public async Task<Guid?> SetRoleAsync(Guid? id, UserRole role, CancellationToken cancellationToken)
+        public async Task<Guid?> SetRoleAsync(Guid? id, string setRole, CancellationToken cancellationToken)
         {
+            UserRole role;
+            if (setRole == "Admin" || setRole == "2")
+            {
+                role = UserRole.Admin;
+            }
+            else if (setRole == "Authorized" || setRole == "1")
+            {
+                role = UserRole.Authorized;
+            }
+            else throw new EntititysNotVaildException(nameof(setRole) + "Не подходящее значение.");
             var model = await GetForUpdateAsync(id, cancellationToken);
             if (model == null)
             {

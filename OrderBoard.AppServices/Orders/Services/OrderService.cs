@@ -82,27 +82,17 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         public async Task<OrderInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken)
+            var model = await _orderRepository.GetDataByIdAsync(id, cancellationToken)
             ?? throw new EntitiesNotFoundException("Заказ не найден.");
             var result = await SetTotalInfoAsync(model, id, cancellationToken);
             return result;
         }
-        /// <summary>
-        /// Обновление полей заказа
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public Task<Guid?> UpdateAsync(OrderDataModel model, CancellationToken cancellationToken)
-        {
-            var entity = _mapper.Map<OrderDataModel, Order>(model);
-            return _orderRepository.UpdateAsync(entity, cancellationToken);
-        }
         public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
+            var model = await _orderRepository.GetDataByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Заказ не найден");
             await DeleteChildByIdAsync(id, cancellationToken);
 
-            var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
             return;
@@ -127,11 +117,8 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         public async Task<Guid?> ConfrimOrderById(Guid? id, CancellationToken cancellationToken)
         {
-            var model = await _orderRepository.GetForUpdateAsync(id, cancellationToken);
-            if (model == null)
-            {
-                throw new EntitiesNotFoundException("Заказ не найден.");
-            }
+            var model = await _orderRepository.GetDataByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Заказ не найден.");
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             entity.PaidAt = DateTime.UtcNow;
             entity.OrderStatus = Contracts.Enums.OrderStatus.Ordered;

@@ -50,7 +50,7 @@ namespace OrderBoard.Api.Middlewares
 
             return exception switch
             {
-                EntitysNotVaildException nv => new HumanReadableError("Ошибка.", null!, traceID, statusCode, nv.HumanReadableMessage),
+                EntititysNotVaildException nv => new HumanReadableError("Введённые параметры вне допустимых значений.", null!, traceID, statusCode, nv.HumanReadableMessage),
                 EntitiesNotFoundException ex => new HumanReadableError("Ошибка.", null!, traceID, statusCode, ex.HumanReadableMessage),
                 EntityNotFoundException => new ApiError("Сущность не найдена.", null!, traceID, statusCode),
                 _ => new ApiError("Произошла непредвиденная ошибка.", null!, traceID, statusCode)
@@ -64,7 +64,7 @@ namespace OrderBoard.Api.Middlewares
                 ArgumentException => HttpStatusCode.BadRequest,
                 EntityNotFoundException => HttpStatusCode.NotFound,
                 EntitiesNotFoundException => HttpStatusCode.NotFound,
-                EntitysNotVaildException => HttpStatusCode.NotAcceptable,
+                EntititysNotVaildException => HttpStatusCode.BadRequest,
                 _ => HttpStatusCode.InternalServerError
             };
 

@@ -40,13 +40,8 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SetRole(Guid id, string setRole, CancellationToken cancellationToken)
         { 
-            UserRole role;
-            if (setRole == "Admin")
-            {
-                role = UserRole.Admin;
-            }
-            else { role = UserRole.Authorized; }
-            var result = await _userService.SetRoleAsync(id, role, cancellationToken);
+
+            var result = await _userService.SetRoleAsync(id, setRole, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 

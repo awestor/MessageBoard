@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using OrderBoard.Domain.Entities;
+using OrderBoard.AppServices.Other.Specifications;
 
 
 namespace OrderBoard.DataAccess.Repositories
@@ -26,13 +27,32 @@ namespace OrderBoard.DataAccess.Repositories
             return model.Id;
         }
 
-        public Task<CategoryInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<List<CategoryInfoModel>> GetBySpecificationWithPaginationAsync(
+    ISpecification<Category> specification, int take, int? skip, CancellationToken cancellationToken)
         {
-            return _repository.GetAll().Where(s => s.Id == id)
+            var query = _repository
+                .GetAll()
+                .OrderBy(item => item.Id)
+                .Where(specification.PredicateExpression);
+
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+
+            return await query
+                .Take(take)
+                .ProjectTo<CategoryInfoModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+        }
+        public async Task<CategoryInfoModel> GetBySpecificationAsync(ISpecification<Category> specification, CancellationToken cancellationToken)
+        {
+            return await _repository
+                .GetByPredicate(specification.PredicateExpression)
                 .ProjectTo<CategoryInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public Task<CategoryDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
+        public Task<CategoryDataModel> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<CategoryDataModel>(_mapper.ConfigurationProvider)
