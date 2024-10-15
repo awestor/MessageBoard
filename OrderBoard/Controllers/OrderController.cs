@@ -85,7 +85,7 @@ namespace OrderBoard.Api.Controllers
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpPost("Confrim Order")]
+        [HttpPost("{id:guid}Confrim Order")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfrimOrderByIdAsync(Guid id, CancellationToken cancellationToken)
         {
@@ -110,7 +110,7 @@ namespace OrderBoard.Api.Controllers
             await _orderService.DeleteAuthAsync(cancellationToken);
             return Ok("Заказ был удалён");
         }
-        [HttpGet("Delete Order by id")]
+        [HttpGet("{id:guid}Delete Order by id")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrderByIdAsync(Guid id, CancellationToken cancellationToken)

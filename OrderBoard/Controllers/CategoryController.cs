@@ -38,9 +38,9 @@ namespace OrderBoard.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Get category by Name")]
+        [HttpPost("Get category by Name")]
         [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByNameAsync(SearchCategoryByNameRequest name, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByNameAsync([FromBody] SearchCategoryByNameRequest name, CancellationToken cancellationToken)
         {
             var result = await _categoryService.GetByNameAsync(name, cancellationToken);
             return Ok(result);

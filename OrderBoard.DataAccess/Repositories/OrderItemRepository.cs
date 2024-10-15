@@ -82,7 +82,12 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-
+        public Task<OrderItemDataModel?> GetDataByItemIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.ItemId == id)
+                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
         //------------------------- Методы для обновления и удаления ----------------------------
         public async Task<Guid?> UpdateAsync(OrderItem model, CancellationToken cancellationToken)
         {

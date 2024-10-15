@@ -72,7 +72,7 @@ namespace OrderBoard.Api.Controllers
             var result = await _itemService.UpdateAsync(model, cancellationToken);
             return Ok(result + "\n Обновление успешно.");
         }
-        [HttpPost("Delete Item")]
+        [HttpPost("{id:guid}Delete Item")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {

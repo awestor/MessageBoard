@@ -79,7 +79,7 @@ namespace OrderBoard.Api.Controllers
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpPost("Delete orderItem")]
+        [HttpPost("{id:guid}Delete orderItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {

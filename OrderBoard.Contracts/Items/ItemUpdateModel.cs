@@ -25,10 +25,6 @@ namespace OrderBoard.Contracts.Items
         /// </summary>
         public decimal? Count { get; set; }
         /// <summary>
-        /// Id категории за которой закреплён товар
-        /// </summary>
-        public Guid? CategoryId { get; set; }
-        /// <summary>
         /// Коментарий к товару
         /// </summary>
         public string? Comment { get; set; }

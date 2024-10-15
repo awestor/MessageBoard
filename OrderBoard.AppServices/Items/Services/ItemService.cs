@@ -5,7 +5,7 @@ using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Items.SpecificationContext.Builders;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Services;
-using OrderBoard.AppServices.Users.Services;
+using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.Items.Requests;
 using OrderBoard.Domain.Entities;
@@ -18,6 +18,7 @@ namespace OrderBoard.AppServices.Items.Services
     public class ItemService : IItemService
     {
         private readonly IItemRepository _itemRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IItemSpecificationBuilder _itemSpecificationBuilder;
@@ -26,13 +27,15 @@ namespace OrderBoard.AppServices.Items.Services
 
 
         public ItemService(IItemRepository itemRepository, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IItemSpecificationBuilder itemSpecificationBuilder,
+            IHttpContextAccessor httpContextAccessor,
+            IOrderItemRepository orderItemRepository, IItemSpecificationBuilder itemSpecificationBuilder,
             IStructuralLoggingService structuralLoggingService,
             ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _orderItemRepository = orderItemRepository;
             _itemSpecificationBuilder = itemSpecificationBuilder;
             _structuralLoggingService = structuralLoggingService;
             _logger = logger;
@@ -81,9 +84,18 @@ namespace OrderBoard.AppServices.Items.Services
             {
                 throw new Exception(HttpStatusCode.Forbidden.ToString() + "Отказано в праве доступа.");
             }
-
-            var entity = _mapper.Map<ItemDataModel, Item>(model);
-            await _itemRepository.DeleteAsync(entity, cancellationToken);
+            var check = await _orderItemRepository.GetDataByItemIdAsync(Guid.Parse(claimsId), cancellationToken);
+            if (check != null)
+            {
+                model.Count = 0;
+                var entity = _mapper.Map<ItemDataModel, Item>(model);
+                await _itemRepository.UpdateAsync(entity, cancellationToken);
+            }
+            else
+            {
+                var entity = _mapper.Map<ItemDataModel, Item>(model);
+                await _itemRepository.DeleteAsync(entity, cancellationToken);
+            }
             _structuralLoggingService.PushProperty("DeleteRequest", id);
             _logger.LogInformation("Товар был удалён.");
             return;
