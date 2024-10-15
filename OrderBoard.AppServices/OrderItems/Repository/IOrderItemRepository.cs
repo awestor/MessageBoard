@@ -63,6 +63,6 @@ namespace OrderBoard.AppServices.Repository.Repository
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
         Task DeleteAsync(OrderItem model, CancellationToken cancellationToken);
-        Task<OrderItemDataModel?> GetDataByItemIdAsync(Guid? id, CancellationToken cancellationToken);
+        Task<List<OrderItemDataModel>> GetAllDataByItemIdAsync(Guid? id, CancellationToken cancellationToken);
     }
 }

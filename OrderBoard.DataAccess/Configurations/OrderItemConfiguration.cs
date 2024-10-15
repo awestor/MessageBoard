@@ -13,7 +13,7 @@ namespace OrderBoard.DataAccess.Configurations
             builder.Property(x => x.ItemId).IsRequired();
             builder.Property(x => x.OrderPrice);
             builder.Property(x => x.OrderId).IsRequired();
-            builder.Property(x => x.Count).IsRequired();           
+            builder.Property(x => x.Count).IsRequired();
         }
     }
 }

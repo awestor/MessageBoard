@@ -54,6 +54,23 @@ namespace OrderBoard.AppServices.Users.Services
 
         public async Task<Guid?> CreateAsync(UserCreateModel model, CancellationToken cancellationToken)
         {
+            if (model.PhoneNumber != null && (model.PhoneNumber.Length < 6 || model.PhoneNumber.Any(ch => char.IsLetter(ch)))) 
+            {
+                throw new EntititysNotVaildException("Телефонный номер не валиден");
+            }
+            else if (model.PhoneNumber != null)
+            {
+                var phonenumber = model.PhoneNumber;
+                if (model.PhoneNumber[0] == '+')
+                {
+                    phonenumber = phonenumber.Substring(1);
+                }
+                if (phonenumber.Any(ch => char.IsDigit(ch)))
+                {
+                    model.PhoneNumber = "+" + phonenumber;
+                }
+                else { throw new EntititysNotVaildException("Телефонный номер не валиден"); }
+            }
             model.Password = CryptoHasher.GetBase64Hash(model.Password);
             var specification = _userSpecificationBuilder.BuildCheckLogin(model.Login);
             var result = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);

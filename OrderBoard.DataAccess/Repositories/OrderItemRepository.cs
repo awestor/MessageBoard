@@ -68,6 +68,13 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
         }
+        public async Task<List<OrderItemDataModel>> GetAllDataByItemIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+             var result = await _repository.GetAll().Where(s => s.ItemId == id)
+                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+            return result;
+        }
 
         //------------------------- Методы для получения одного поля ----------------------------
         public Task<OrderItemInfoModel?> GetInfoByIdAsync(Guid? id, CancellationToken cancellationToken)
@@ -79,12 +86,6 @@ namespace OrderBoard.DataAccess.Repositories
         public Task<OrderItemDataModel?> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)
-                .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
-        public Task<OrderItemDataModel?> GetDataByItemIdAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            return _repository.GetAll().Where(s => s.ItemId == id)
                 .ProjectTo<OrderItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }

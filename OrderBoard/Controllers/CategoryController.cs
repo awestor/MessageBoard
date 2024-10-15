@@ -63,9 +63,9 @@ namespace OrderBoard.Api.Controllers
         }
         [HttpPost("{id:guid}Delete category by Id")]
         [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteById(Guid id, Guid newId, CancellationToken cancellationToken)
         {
-            await _categoryService.DeleteAsync(id, cancellationToken);
+            await _categoryService.DeleteAsync(id, newId, cancellationToken);
             return Ok("Категория была удалёна");
         }
     }

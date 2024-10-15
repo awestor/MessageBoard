@@ -8,6 +8,7 @@ using OrderBoard.AppServices.Other.Services;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.Items.Requests;
+using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Domain.Entities;
 using System.Net;
 using System.Security.Claims;
@@ -84,18 +85,20 @@ namespace OrderBoard.AppServices.Items.Services
             {
                 throw new Exception(HttpStatusCode.Forbidden.ToString() + "Отказано в праве доступа.");
             }
-            var check = await _orderItemRepository.GetDataByItemIdAsync(Guid.Parse(claimsId), cancellationToken);
+            var check = await _orderItemRepository.GetAllDataByItemIdAsync(id, cancellationToken);
             if (check != null)
             {
-                model.Count = 0;
-                var entity = _mapper.Map<ItemDataModel, Item>(model);
-                await _itemRepository.UpdateAsync(entity, cancellationToken);
+                foreach (var orderItem in check) 
+                {
+                    orderItem.ItemId = Guid.Empty;
+                    var TOI = _mapper.Map<OrderItemDataModel, OrderItem>(orderItem);
+                    await _orderItemRepository.UpdateAsync(TOI,cancellationToken);
+                }
             }
-            else
-            {
-                var entity = _mapper.Map<ItemDataModel, Item>(model);
-                await _itemRepository.DeleteAsync(entity, cancellationToken);
-            }
+
+            var entity = _mapper.Map<ItemDataModel, Item>(model);
+            await _itemRepository.DeleteAsync(entity, cancellationToken);
+
             _structuralLoggingService.PushProperty("DeleteRequest", id);
             _logger.LogInformation("Товар был удалён.");
             return;

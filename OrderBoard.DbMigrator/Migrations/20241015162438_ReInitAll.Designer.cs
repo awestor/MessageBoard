@@ -12,8 +12,8 @@ using OrderBoard.DbMigrator;
 namespace OrderBoard.DbMigrator.Migrations
 {
     [DbContext(typeof(MigrationDbContext))]
-    [Migration("20241015064912_UserConfigs")]
-    partial class UserConfigs
+    [Migration("20241015162438_ReInitAll")]
+    partial class ReInitAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace OrderBoard.DbMigrator.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name");
 
                     b.ToTable("Category");
                 });

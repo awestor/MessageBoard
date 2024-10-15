@@ -65,7 +65,7 @@ namespace OrderBoard.AppServices.Categories.Services
             await _categoryRepository.UpdateAsync(entity, cancellationToken);
             return model.Id;
         }
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, Guid newId, CancellationToken cancellationToken)
         {
             var model = await _categoryRepository.GetDataByIdAsync(id, cancellationToken);
             if (model == null)
@@ -76,7 +76,7 @@ namespace OrderBoard.AppServices.Categories.Services
             childList = await _categoryRepository.GetAllChildDataByIdAsync(id, cancellationToken);
             foreach (var child in childList)
             {
-                child.ParentId = null;
+                child.ParentId = newId;
                 var temp = _mapper.Map<CategoryDataModel, Category>(child);
                 await _categoryRepository.UpdateAsync(temp, cancellationToken);
             }

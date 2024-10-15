@@ -46,7 +46,7 @@ namespace OrderBoard.DbMigrator.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Name");
+                    b.HasIndex("Name");
 
                     b.ToTable("Category");
                 });
