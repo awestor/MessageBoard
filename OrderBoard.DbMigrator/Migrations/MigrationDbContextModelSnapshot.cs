@@ -46,6 +46,8 @@ namespace OrderBoard.DbMigrator.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.ToTable("Category");
                 });
 
@@ -55,7 +57,7 @@ namespace OrderBoard.DbMigrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -114,6 +116,10 @@ namespace OrderBoard.DbMigrator.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("ItemId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
                     b.Property<int?>("Length")
                         .HasColumnType("integer");
 
@@ -123,6 +129,8 @@ namespace OrderBoard.DbMigrator.Migrations
                         .HasColumnType("character varying(1024)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("FileContent");
                 });
@@ -144,7 +152,7 @@ namespace OrderBoard.DbMigrator.Migrations
                         .IsRequired()
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
@@ -230,6 +238,17 @@ namespace OrderBoard.DbMigrator.Migrations
                     b.ToTable("OrderItem");
                 });
 
+            modelBuilder.Entity("OrderBoard.Domain.Entities.FileContent", b =>
+                {
+                    b.HasOne("OrderBoard.Domain.Entities.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("OrderBoard.Domain.Entities.Item", b =>
                 {
                     b.HasOne("OrderBoard.Domain.Entities.Category", "Category")
@@ -241,7 +260,7 @@ namespace OrderBoard.DbMigrator.Migrations
                     b.HasOne("OrderBoard.Domain.Entities.EntUser", "User")
                         .WithMany("Items")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Category");

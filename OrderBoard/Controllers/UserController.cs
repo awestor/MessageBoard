@@ -6,6 +6,7 @@ using OrderBoard.Contracts.Enums;
 using Microsoft.AspNetCore.Authorization;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.OrderItem;
+using OrderBoard.Contracts.UserDto.Requests;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -20,14 +21,14 @@ namespace OrderBoard.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("Create new User")]
         public async Task<IActionResult> Post([FromBody] UserCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _userService.CreateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid} Get by Id")]
         [ProducesResponseType(typeof(UserInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -45,11 +46,18 @@ namespace OrderBoard.Api.Controllers
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 
-        [HttpPost("Login")]
-        [ProducesResponseType(typeof(UserAuthDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login([FromBody] UserAuthDto model, CancellationToken cancellationToken)
+        [HttpPost("LoginByLogin")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login([FromBody] UserLoginAuthRequest model, CancellationToken cancellationToken)
         {
-            var result = await _userService.LoginAsync(model, cancellationToken);
+            var result = await _userService.LoginAsync(model, null, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK, result);
+        }
+        [HttpPost("LoginByEmail")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login([FromBody] UserEmailAuthRequest model, CancellationToken cancellationToken)
+        {
+            var result = await _userService.LoginAsync(null, model, cancellationToken);
             return StatusCode((int)HttpStatusCode.OK, result);
         }
 
@@ -58,18 +66,30 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetUserInfo(CancellationToken cancellationToken)
         {
             var result = await _userService.GetCurrentUserAsync(cancellationToken);
-            if (result == null)
-            {
-                throw new EntitiesNotFoundException("Пользователь не найден.");
-            }
             return StatusCode((int)HttpStatusCode.OK, result);
         }
-        [HttpPost("Update orderItem")]
+        [HttpPost("Update User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateInputModel model, CancellationToken cancellationToken)
         {
             await _userService.UpdateAsync(model, cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK);
+        }
+        [HttpPost("Delete User if you Auth")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize]
+        public async Task<IActionResult> DeleteAuthAsync(CancellationToken cancellationToken)
+        {
+            await _userService.DeleteAuthAsync(cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK);
+        }
+        [HttpPost("{id:guid} Delete User by Id if you have Admin role")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            await _userService.DeleteByIdAsync(id, cancellationToken);
             return StatusCode((int)HttpStatusCode.OK);
         }
     }

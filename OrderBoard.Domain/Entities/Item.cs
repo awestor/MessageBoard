@@ -30,7 +30,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Дата создания
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         /// <summary>
         /// Id категории за которой закреплён товар
         /// </summary>

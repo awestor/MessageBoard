@@ -11,6 +11,7 @@ using OrderBoard.AppServices.Other.Validators.Items;
 using OrderBoard.AppServices.Other.Validators.ItemValidator;
 using OrderBoard.AppServices.Other.Validators.OrderItems;
 using OrderBoard.AppServices.Other.Validators.Orders;
+using OrderBoard.AppServices.Other.Validators.Users;
 using OrderBoard.ComponentRegistrator;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.DataAccess;
@@ -93,6 +94,10 @@ namespace OrderBoard.Api
             builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderItemFromOrderRequestValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderAuthRequestValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<EmailAuthValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<LoginAuthValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserValidator>();
             builder.Services.AddFluentValidationAutoValidation();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

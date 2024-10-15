@@ -9,7 +9,12 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
     {
         public ISpecification<Item> Build(SearchItemForPaginationRequest request)
         {
-            var specification = Specification<Item>.FromPredicate(item => item.CategoryId == request.CategoryId);
+            var specification = Specification<Item>.True;
+
+            if (request.CategoryId.HasValue)
+            {
+                specification = Specification<Item>.FromPredicate(item => item.CategoryId == request.CategoryId);
+            }
 
             if (request.MinPrice.HasValue)
             {
@@ -27,6 +32,21 @@ namespace OrderBoard.AppServices.Items.SpecificationContext.Builders
         {
             var specification = Specification<Item>.FromPredicate(item => item.Name == request.Name);
 
+            if (request.MinPrice.HasValue)
+            {
+                specification = specification.And(new MinPriceSpecification(request.MinPrice.Value));
+            }
+
+            if (request.MaxPrice.HasValue)
+            {
+                specification = specification.And(new MaxPriceSpecification(request.MaxPrice.Value));
+            }
+            return specification;
+        }
+
+        public ISpecification<Item> Build(Guid userId, SearchItemByUserIdRequest request)
+        {
+            var specification = Specification<Item>.FromPredicate(item => item.UserId == userId);
             if (request.MinPrice.HasValue)
             {
                 specification = specification.And(new MinPriceSpecification(request.MinPrice.Value));

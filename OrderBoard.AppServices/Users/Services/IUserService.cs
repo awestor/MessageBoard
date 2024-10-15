@@ -1,6 +1,8 @@
 ﻿using OrderBoard.Contracts.Enums;
 using OrderBoard.Contracts.Items;
+using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.UserDto;
+using OrderBoard.Contracts.UserDto.Requests;
 
 namespace OrderBoard.AppServices.User.Services
 {
@@ -28,20 +30,6 @@ namespace OrderBoard.AppServices.User.Services
         /// <returns>Идентификатор пользователя</returns>
         Task<Guid?> UpdateAsync(UserUpdateInputModel model, CancellationToken cancellationToken);
         /// <summary>
-        /// Удаление товара по идентификатору
-        /// </summary>
-        /// <param name="model">Модель пользователя</param>
-        /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
-        Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
-        /// <summary>
-        /// Вернуть для обновления
-        /// </summary>
-        /// <param name="id">Идентификатор пользователя</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
-        /// <returns>Модель пользователя</returns>
-        Task<UserDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
-        /// <summary>
         /// Установаить роль
         /// </summary>
         /// <param name="id">Идентификатор пользователя</param>
@@ -55,7 +43,7 @@ namespace OrderBoard.AppServices.User.Services
         /// <param name="model">Модель пользователя</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Токен</returns>
-        Task<String> LoginAsync(UserAuthDto model, CancellationToken cancellationToken);
+        Task<String> LoginAsync(UserLoginAuthRequest? loginModel, UserEmailAuthRequest? emailModel, CancellationToken cancellationToken);
         /// <summary>
         /// Аутентификация пользователя
         /// </summary>
@@ -70,6 +58,10 @@ namespace OrderBoard.AppServices.User.Services
         /// <param name="Password">Пароль пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Модель пользователя</returns>
-        Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string Login, string Email, string Password, CancellationToken cancellationToken);
+        Task<UserDataModel> GetUserByLoginAndPasswordAsync(UserLoginAuthRequest model, CancellationToken cancellationToken);
+        Task<UserDataModel> GetUserByEmailAndPasswordAsync(UserEmailAuthRequest model, CancellationToken cancellationToken);
+
+        Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
+        Task DeleteAuthAsync(CancellationToken cancellationToken);
     }
 }

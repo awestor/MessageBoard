@@ -2,17 +2,24 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OrderBoard.AppServices.Items.Repositories;
+using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.Orders.Repository;
+using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Hasher;
 using OrderBoard.AppServices.Other.Validators.Users;
+using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.AppServices.User.Services;
 using OrderBoard.AppServices.Users.Repository;
+using OrderBoard.AppServices.Users.SpecificationContext.Builders;
 using OrderBoard.Contracts.Enums;
+using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.Orders;
 using OrderBoard.Contracts.UserDto;
+using OrderBoard.Contracts.UserDto.Requests;
 using OrderBoard.Domain.Entities;
-using System.Data;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -25,14 +32,19 @@ namespace OrderBoard.AppServices.Users.Services
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
+        private readonly IItemRepository _itemRepository;
+        private readonly IUserSpecificationBuilder _userSpecificationBuilder;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
-            IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+            IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
+            IItemRepository itemRepository, IUserSpecificationBuilder userSpecificationBuilder)
         { 
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _itemRepository = itemRepository;
+            _userSpecificationBuilder = userSpecificationBuilder;
 
         }
 
@@ -48,20 +60,12 @@ namespace OrderBoard.AppServices.Users.Services
         {
             return _userRepository.GetByIdAsync(id, cancellationToken);
         }
-        public Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string Login, string email, string Password, CancellationToken cancellationToken)
-        {
-            return _userRepository.GetByLoginOrEmailAndPasswordAsync(Login, email, Password, cancellationToken);
-        }
-        public Task<UserDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            return _userRepository.GetForUpdateAsync(id, cancellationToken);
-        }
         public async Task<Guid?> UpdateAsync(UserUpdateInputModel model, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            var UserModel = await _userRepository.GetForUpdateAsync(new Guid(claimId), cancellationToken);
+            var UserModel = await _userRepository.GetDataByIdAsync(new Guid(claimId), cancellationToken);
             UserModel = UpdateUserValidator.UpdateValidator(UserModel, model);
             if (UserModel == null) 
             {
@@ -71,13 +75,6 @@ namespace OrderBoard.AppServices.Users.Services
             var entity = _mapper.Map<UserDataModel, EntUser>(UserModel);
 
             return await _userRepository.UpdateAsync(entity, cancellationToken);
-        }
-        public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            var model = await _userRepository.GetForUpdateAsync(id, cancellationToken);
-            var entity = _mapper.Map<UserDataModel, EntUser>(model);
-            _userRepository.DeleteByIdAsync(entity, cancellationToken);
-            return;
         }
         public async Task<Guid?> SetRoleAsync(Guid? id, string setRole, CancellationToken cancellationToken)
         {
@@ -91,10 +88,11 @@ namespace OrderBoard.AppServices.Users.Services
                 role = UserRole.Authorized;
             }
             else throw new EntititysNotVaildException(nameof(setRole) + "Не подходящее значение.");
-            var model = await GetForUpdateAsync(id, cancellationToken);
-            if (model == null)
+            var model = await _userRepository.GetDataByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Пользователь, которому необходимо изменить роль не найден.");
+            if(model.Role == role)
             {
-                throw new EntitiesNotFoundException("Пользователь, которому необходимо изменить роль не найден.");
+                throw new EntititysNotVaildException("У данного пользователя уже есть данный статус");
             }
             model.Role = role;
             var entity = _mapper.Map<UserDataModel, EntUser>(model);
@@ -102,19 +100,70 @@ namespace OrderBoard.AppServices.Users.Services
             return result;
         }
 
-        public async Task<string> LoginAsync(UserAuthDto model, CancellationToken cancellationToken)
+        public async Task<UserInfoModel> GetCurrentUserAsync(CancellationToken cancellationToken)
         {
-            model.Password = CryptoHasher.GetBase64Hash(model.Password);
-            var UserAuthModel = await _userRepository
-                .GetByLoginOrEmailAndPasswordAsync(model.Login, model.Email, model.Password, cancellationToken);
-            if (UserAuthModel == null)
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new Exception("Пожалуйста авторизуйтесь заново.");
+            if (string.IsNullOrWhiteSpace(claimId))
             {
-                throw new EntitiesNotFoundException("Пользователь не найден");
-            }//EntitysNotVaildException
+                throw new Exception("Непредвиденная ошибка");
+            }
+            var id = Guid.Parse(claimId);
+            var result = await _userRepository.GetByIdAsync(id, cancellationToken);
+            if(result == null)
+            {
+                throw new EntitiesNotFoundException("Данные о пользователе не найдены");
+            }
+            return result;
+        }
+
+        public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            var modelList = await _itemRepository.GetAllItemAsync(id, cancellationToken);
+            await SetNullChildItemAsync(modelList, cancellationToken);
+            await _userRepository.DeleteByIdAsync(id, cancellationToken);
+            return;
+        }
+
+        public async Task DeleteAuthAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new Exception("Пожалуйста авторизуйтесь заново.");
+            await DeleteByIdAsync(Guid.Parse(claimId), cancellationToken);
+            return;
+        }
+
+        public async Task SetNullChildItemAsync(List<ItemDataModel> modelList, CancellationToken cancellationToken)
+        {
+            foreach (var item in modelList)
+            {
+                item.Count = 0;
+                item.UserId = Guid.Empty;
+                var entity = _mapper.Map<ItemDataModel, Item>(item);
+                await _itemRepository.UpdateAsync(entity, cancellationToken);
+            }
+            return;
+        }
+
+        public async Task<string> LoginAsync(UserLoginAuthRequest? loginModel, UserEmailAuthRequest? emailModel, CancellationToken cancellationToken)
+        {
+            UserDataModel UserAuthModel;
+            if (loginModel != null)
+            {
+                UserAuthModel = await GetUserByLoginAndPasswordAsync(loginModel, cancellationToken);
+            }
+            else if (emailModel != null)
+            {
+                UserAuthModel = await GetUserByEmailAndPasswordAsync(emailModel, cancellationToken);
+            }
+            else throw new EntitiesNotFoundException("Информация о пользователе не найдена или был отправлен неверный набор данных");
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, UserAuthModel.Id.ToString()),
-                new Claim(ClaimTypes.Name, UserAuthModel.Name)
+                new Claim(ClaimTypes.Name, UserAuthModel.Name),
+                new Claim(ClaimTypes.Role, UserAuthModel.Role.ToString())
             };
 
             var secretKey = _configuration["Jwt:Key"];
@@ -131,20 +180,19 @@ namespace OrderBoard.AppServices.Users.Services
             return result.ToString();
         }
 
-        public async Task<UserInfoModel> GetCurrentUserAsync(CancellationToken cancellationToken)
+        public async Task<UserDataModel> GetUserByLoginAndPasswordAsync(UserLoginAuthRequest model, CancellationToken cancellationToken)
         {
-            var claims = _httpContextAccessor.HttpContext.User.Claims;
-            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrWhiteSpace(claimId))
-            {
-                throw new Exception("Непредвиденная ошибка");
-            }
-            var id = Guid.Parse(claimId);
-            var result = await _userRepository.GetByIdAsync(id, cancellationToken);
-            if(result == null)
-            {
-                throw new EntitiesNotFoundException("Данные о пользователе не найдены");
-            }
+            var specification = _userSpecificationBuilder.BuildLogin(model.Login, model.Password);
+            var result = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if(result == null) throw new EntitiesNotFoundException("Пользователь не найден");
+            return result;
+        }
+
+        public async Task<UserDataModel> GetUserByEmailAndPasswordAsync(UserEmailAuthRequest model, CancellationToken cancellationToken)
+        {
+            var specification = _userSpecificationBuilder.BuildEmail(model.Email, model.Password);
+            var result = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if (result == null) throw new EntitiesNotFoundException("Пользователь не найден");
             return result;
         }
     }

@@ -50,7 +50,7 @@ namespace OrderBoard.AppServices.Items.Services
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
         Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
-        Task<List<ItemInfoModel>> GetAllItemAsync(CancellationToken cancellationToken);
+        Task<List<ItemInfoModel>> GetAllItemAsync(SearchItemByUserIdRequest request, CancellationToken cancellationToken);
         Task<List<ItemInfoModel>> GetAllItemByNameAsync(SearchItemByNameRequest request, CancellationToken cancellationToken);
     }
 }

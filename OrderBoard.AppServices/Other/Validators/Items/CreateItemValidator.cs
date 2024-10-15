@@ -1,11 +1,5 @@
 ﻿using FluentValidation;
-using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderBoard.AppServices.Other.Validators.Items
 {

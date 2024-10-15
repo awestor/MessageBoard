@@ -41,9 +41,9 @@ namespace OrderBoard.Api.Controllers
         }
         [HttpGet("GetAllItem")]
         [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllItem(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllItem(SearchItemByUserIdRequest request, CancellationToken cancellationToken)
         {
-            var result = await _itemService.GetAllItemAsync(cancellationToken) 
+            var result = await _itemService.GetAllItemAsync(request, cancellationToken) 
                 ?? throw new EntitiesNotFoundException("Вы не продаёте никаких товаров.");
             return Ok(result);
         }

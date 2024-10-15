@@ -93,12 +93,14 @@ namespace OrderBoard.AppServices.Items.Services
             return await _itemRepository.UpdateAsync(entity, cancellationToken);
         }
 
-        public async Task<List<ItemInfoModel>> GetAllItemAsync(CancellationToken cancellationToken)
+        public async Task<List<ItemInfoModel>> GetAllItemAsync(SearchItemByUserIdRequest request, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
                 ?? throw new Exception("Пожалуйста, авторизируйтесь заново.");
-            return await _itemRepository.GetAllItemAsync(new Guid(claimsId), cancellationToken); ;
+            var specification = _itemSpecificationBuilder.Build(Guid.Parse(claimsId), request);
+            return await _itemRepository.GetBySpecificationWithPaginationAsync(specification,
+                request.Take, request.Skip, cancellationToken);
         }
 
         public async Task<List<ItemInfoModel>> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)

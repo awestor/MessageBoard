@@ -21,6 +21,7 @@ using OrderBoard.AppServices.OrderItems.SpecificationContext.Builders;
 using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
 using OrderBoard.AppServices.Categories.SpecificationContext.Builders;
 using FluentValidation;
+using OrderBoard.AppServices.Users.SpecificationContext.Builders;
 namespace OrderBoard.ComponentRegistrator
 {
     public static class ComponentRegistrator
@@ -48,17 +49,11 @@ namespace OrderBoard.ComponentRegistrator
             services.AddScoped<IOrderItemSpecificationBuilder, OrderItemSpecificationBuilder>();
             services.AddScoped<IOrderSpecificationBuilder, OrderSpecificationBuilder>();
             services.AddScoped<ICategorySpecificationBuilder, CategorySpecificationBuilder>();
+            services.AddScoped<IUserSpecificationBuilder, UserSpecificationBuilder>();
 
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
-
-
-
-
-
-
-
 
 
 

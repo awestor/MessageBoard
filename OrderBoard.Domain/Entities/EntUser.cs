@@ -35,7 +35,7 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Дата создания профиля
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
         /// <summary>
         /// Уровень прав доступа
         /// </summary>

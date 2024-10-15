@@ -22,6 +22,7 @@ namespace OrderBoard.ComponentRegistrator.MapProfiles
 
             CreateMap<UserDataModel, EntUser>(MemberList.None);
             CreateMap<EntUser, UserDataModel>();
+            CreateMap<EntUser, EntUser>();
         }
     }
 }

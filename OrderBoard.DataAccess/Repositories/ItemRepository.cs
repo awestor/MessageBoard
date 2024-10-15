@@ -78,21 +78,10 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-        public async Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            var result = await _repository.GetAll().Where(s => s.Id == id)
-                .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
-            if (result == null)
-            {
-                throw new EntitiesNotFoundException("Товар не найден.");
-            }
-            return result.Price;
-        }
-        public async Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<List<ItemDataModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken)
         {
             var ItemList = await _repository.GetAll().Where(s => s.UserId == id)
-                .ProjectTo<ItemInfoModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             return ItemList;

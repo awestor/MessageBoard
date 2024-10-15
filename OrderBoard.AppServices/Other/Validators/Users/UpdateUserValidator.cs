@@ -1,19 +1,29 @@
 ﻿using FluentValidation;
 using OrderBoard.AppServices.Other.Hasher;
 using OrderBoard.Contracts.UserDto;
+using OrderBoard.Contracts.UserDto.Requests;
 using OrderBoard.Domain.Entities;
 
 namespace OrderBoard.AppServices.Other.Validators.Users
 {
-    public class UpdateUserValidator
+    public class UpdateUserValidator : AbstractValidator<UserUpdateInputModel>
     {
+        public UpdateUserValidator()
+        {
+            RuleFor(x => x.Login).NotNull().MinimumLength(6).WithMessage("Некорректный идентефикатор пользователя");
+            RuleFor(x => x.Password).NotNull().MinimumLength(8).WithMessage("Пароль должен содержать не менее 8 символов");
+            RuleFor(x => x.Name).NotNull().MinimumLength(3).WithMessage("Имя должно быть не менее 3 символов");
+            RuleFor(x => x.Email).NotNull().EmailAddress().MinimumLength(6).WithMessage("Некорректный e-mail");
+            RuleFor(x => x.PhoneNumber).NotNull().WithMessage("Поле с телефонным номером должно быть заполнено");
+            return;
+        }
         public static UserDataModel? UpdateValidator(UserDataModel userModel, UserUpdateInputModel inputModel)
         {
-            if (!string.IsNullOrWhiteSpace(inputModel.Login) && inputModel.Login.Length>6 && inputModel.Login.Any(ch => char.IsLetterOrDigit(ch))) 
+            if (!string.IsNullOrWhiteSpace(inputModel.Login) && inputModel.Login.Any(ch => char.IsLetterOrDigit(ch))) 
             { 
                 userModel.Login = inputModel.Login; 
             }
-            if (inputModel.Name != null && inputModel.Name.Length > 6 && inputModel.Name.Any(ch => char.IsLetter(ch))) 
+            if (inputModel.Name.Any(ch => char.IsLetter(ch))) 
             { 
                 userModel.Name = inputModel.Name; 
             }
@@ -21,16 +31,10 @@ namespace OrderBoard.AppServices.Other.Validators.Users
             {
                 userModel.Description = inputModel.Description; 
             }
-            if (inputModel.Password != null && inputModel.Password.Length > 8) 
-            {
                 userModel.Password = inputModel.Password;
                 userModel.Password = CryptoHasher.GetBase64Hash(userModel.Password);
-            }
-            if (inputModel.Email != null && inputModel.Email.Length > 8) 
-            { 
                 userModel.Email = inputModel.Email; 
-            }
-            if (inputModel.PhoneNumber != null && inputModel.PhoneNumber.Length > 6 && inputModel.PhoneNumber.Any(ch => !char.IsLetter(ch))) 
+            if (inputModel.PhoneNumber.Length > 6 && inputModel.PhoneNumber.Any(ch => !char.IsLetter(ch))) 
             {
                 var phonenumber = inputModel.PhoneNumber;
                 if (inputModel.PhoneNumber[0]=='+')

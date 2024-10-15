@@ -22,7 +22,7 @@ namespace OrderBoard.DataAccess.Configurations
             builder.Property(x => x.Login).HasMaxLength(256).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(4096);
 
-            builder.HasMany(x => x.Items).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.Items).WithOne(x => x.User).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

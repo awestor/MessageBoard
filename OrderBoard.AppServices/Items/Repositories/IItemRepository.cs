@@ -46,8 +46,7 @@ namespace OrderBoard.AppServices.Items.Repositories
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task DeleteAsync(Item model, CancellationToken cancellationToken);
-        Task<Decimal?> GetPriceAsync(Guid? id, CancellationToken cancellationToken);
-        Task<List<ItemInfoModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken);
+        Task<List<ItemDataModel>> GetAllItemAsync(Guid? id, CancellationToken cancellationToken);
         Task<List<ItemInfoModel>> GetBySpecificationWithPaginationAsync(ISpecification<Item> specification,
             int take, int? skip, CancellationToken cancellationToken);
         Task<List<ItemInfoModel>> GetBySpecificationAsync(ISpecification<Item> specification,

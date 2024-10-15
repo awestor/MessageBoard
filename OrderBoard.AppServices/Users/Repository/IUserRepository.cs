@@ -1,4 +1,5 @@
-﻿using OrderBoard.Contracts.Enums;
+﻿using OrderBoard.AppServices.Other.Specifications;
+using OrderBoard.Contracts.Enums;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.Domain.Entities;
 
@@ -34,22 +35,23 @@ namespace OrderBoard.AppServices.Users.Repository
         /// <param name="id">Идентификатор пользователя</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель пользователя</returns>
-        Task<UserDataModel> GetForUpdateAsync(Guid? id, CancellationToken cancellationToken);
+        Task<UserDataModel> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken);
+        /// <summary>
+        /// Удаление товара
+        /// </summary>
+        /// <param name="model">Модель пользователя</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        Task DeleteAsync(EntUser model, CancellationToken cancellationToken);
         /// <summary>
         /// Удаление товара по идентификатору
         /// </summary>
         /// <param name="model">Модель пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
-        Task DeleteByIdAsync(EntUser model, CancellationToken cancellationToken);
-        /// <summary>
-        /// Получить модель пользователя по паролю + логину или почте
-        /// </summary>
-        /// <param name="login">Логин пользователя</param>
-        /// <param name="email">Почта пользователя</param>
-        /// <param name="password">Пароль пользователя</param>
-        /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns>Модель пользователя</returns>
-        Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string login, string email,  string password, CancellationToken cancellationToken);
+        Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
+
+        Task<UserDataModel?> GetDataBySpecificationAsync(ISpecification<EntUser> specification,
+            CancellationToken cancellationToken);
     }
 }
