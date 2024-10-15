@@ -3,10 +3,8 @@ using OrderBoard.Contracts.Categories;
 using AutoMapper;
 using OrderBoard.Domain.Entities;
 using OrderBoard.AppServices.Other.Exceptions;
-using OrderBoard.Contracts.BasePagination;
 using OrderBoard.AppServices.Categories.SpecificationContext.Builders;
 using OrderBoard.Contracts.Categories.Requests;
-using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 using OrderBoard.AppServices.Other.Services;
 
@@ -17,7 +15,7 @@ namespace OrderBoard.AppServices.Categories.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly ICategorySpecificationBuilder _categorySpecificationBuilder;
-        private readonly ILogger _logger;
+        private readonly ILogger<Category> _logger;
         private readonly IStructuralLoggingService _structuralLoggingService;
 
         /// <summary>

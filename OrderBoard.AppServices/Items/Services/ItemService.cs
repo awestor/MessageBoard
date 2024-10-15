@@ -5,6 +5,7 @@ using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Items.SpecificationContext.Builders;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Services;
+using OrderBoard.AppServices.Users.Services;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.Items.Requests;
 using OrderBoard.Domain.Entities;
@@ -21,12 +22,13 @@ namespace OrderBoard.AppServices.Items.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IItemSpecificationBuilder _itemSpecificationBuilder;
         private readonly IStructuralLoggingService _structuralLoggingService;
-        private readonly ILogger _logger;
+        private readonly ILogger<ItemService> _logger;
 
 
         public ItemService(IItemRepository itemRepository, IMapper mapper,
             IHttpContextAccessor httpContextAccessor, IItemSpecificationBuilder itemSpecificationBuilder,
-            IStructuralLoggingService structuralLoggingService, ILogger logger)
+            IStructuralLoggingService structuralLoggingService,
+            ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _mapper = mapper;

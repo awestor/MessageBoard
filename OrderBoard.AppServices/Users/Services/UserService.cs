@@ -38,13 +38,13 @@ namespace OrderBoard.AppServices.Users.Services
         private readonly IItemRepository _itemRepository;
         private readonly IUserSpecificationBuilder _userSpecificationBuilder;
         private readonly IStructuralLoggingService _structuralLoggingService;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
             IItemRepository itemRepository, IUserSpecificationBuilder userSpecificationBuilder,
             IStructuralLoggingService structuralLoggingService,
-            ILogger logger)
+            ILogger<UserService> logger)
         { 
             _userRepository = userRepository;
             _mapper = mapper;

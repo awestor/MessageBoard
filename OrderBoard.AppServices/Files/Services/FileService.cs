@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OrderBoard.AppServices.Files.Repositories;
-using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Services;
 using OrderBoard.Contracts.Files;
@@ -14,12 +13,12 @@ namespace OrderBoard.AppServices.Files.Services
     {
         private readonly IFileRepository _fileRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<FileService> _logger;
         private readonly IStructuralLoggingService _structuralLoggingService;
 
         public FileService(IFileRepository fileRepository, IMapper mapper,
             IStructuralLoggingService structuralLoggingService,
-            ILogger logger)
+            ILogger<FileService> logger)
         {
             _fileRepository = fileRepository;
             _mapper = mapper;

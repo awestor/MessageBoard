@@ -13,6 +13,7 @@ using OrderBoard.Contracts.OrderItem;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.AppServices.Other.Services;
 using Microsoft.Extensions.Logging;
+using OrderBoard.AppServices.Users.Services;
 
 namespace OrderBoard.AppServices.Orders.Services
 {
@@ -25,14 +26,14 @@ namespace OrderBoard.AppServices.Orders.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderSpecificationBuilder _orderSpecificationBuilder;
         private readonly IStructuralLoggingService _structuralLoggingService;
-        private readonly ILogger _logger;
+        private readonly ILogger<OrderService> _logger;
 
         public OrderService(IOrderRepository orderRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
             IUserRepository userRepository, IOrderSpecificationBuilder orderSpecificationBuilder,
             IOrderItemRepository orderItemRepository,
              IStructuralLoggingService structuralLoggingService,
-             ILogger logger)
+             ILogger<OrderService> logger)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;

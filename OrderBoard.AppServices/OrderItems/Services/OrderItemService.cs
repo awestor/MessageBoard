@@ -30,13 +30,13 @@ namespace OrderBoard.AppServices.Users.Services
         private readonly IOrderService _orderService;
         private readonly IOrderItemSpecificationBuilder _orderItemSpecificationBuilder;
         private readonly IStructuralLoggingService _structuralLoggingService;
-        private readonly ILogger _logger;
+        private readonly ILogger<OrderItemService> _logger;
 
        public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper,
              IOrderService orderService, IItemService itemService,
              IOrderItemSpecificationBuilder orderItemSpecificationBuilder,
              IStructuralLoggingService structuralLoggingService,
-             ILogger logger)
+             ILogger<OrderItemService> logger)
         {
             _orderItemRepository = orderItemRepository;
             _mapper = mapper;
