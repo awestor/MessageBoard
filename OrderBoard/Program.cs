@@ -88,6 +88,9 @@ namespace OrderBoard.Api
             builder.Services.AddValidatorsFromAssemblyContaining<SearchCategoryValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateItemValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemByNameValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemByUserIdValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemForPaginationValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemValidator>();
@@ -98,6 +101,7 @@ namespace OrderBoard.Api
             builder.Services.AddValidatorsFromAssemblyContaining<EmailAuthValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<LoginAuthValidator>();
             builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserValidator>();
+
             builder.Services.AddFluentValidationAutoValidation();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

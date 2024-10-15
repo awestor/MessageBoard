@@ -63,9 +63,6 @@ namespace OrderBoard.DataAccess.Repositories
             _repository.DeleteAsync(model, cancellationToken);
             return Task.CompletedTask;
         }
-
-
-        //------------------------- Под перенос на спецификацию ----------------------------
         public Task<ItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)

@@ -49,12 +49,20 @@ namespace OrderBoard.AppServices.Users.Services
 
         }
 
-        public Task<Guid?> CreateAsync(UserCreateModel model, CancellationToken cancellationToken)
+        public async Task<Guid?> CreateAsync(UserCreateModel model, CancellationToken cancellationToken)
         {
             model.Password = CryptoHasher.GetBase64Hash(model.Password);
+            var specification = _userSpecificationBuilder.BuildCheckLogin(model.Login);
+            var result = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if (result != null) { throw new EntititysNotVaildException("Данный e-mail уже занят"); }
+
+            specification = _userSpecificationBuilder.BuildCheckEmail(model.Login);
+            result = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if (result != null) { throw new EntititysNotVaildException("Данный login уже занят"); }
+
             var entity = _mapper.Map<UserCreateModel, EntUser>(model);
 
-            return _userRepository.AddAsync(entity, cancellationToken);
+            return await _userRepository.AddAsync(entity, cancellationToken);
         }
 
         public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
@@ -68,10 +76,18 @@ namespace OrderBoard.AppServices.Users.Services
 
             var UserModel = await _userRepository.GetDataByIdAsync(new Guid(claimId), cancellationToken);
             UserModel = UpdateUserValidator.UpdateValidator(UserModel, model);
-            if (UserModel == null) 
+            if (UserModel == null || UserModel.Role==UserRole.Deleted) 
             {
-                throw new InvalidOperationException();
+                throw new EntitiesNotFoundException("Вашь профиль не найден или был удалён.");
             }
+
+            var specification = _userSpecificationBuilder.BuildCheckLogin(model.Login);
+            var check = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if (check != null) { throw new EntititysNotVaildException("Данный e-mail уже занят"); }
+
+            specification = _userSpecificationBuilder.BuildCheckEmail(model.Login);
+            check = await _userRepository.GetDataBySpecificationAsync(specification, cancellationToken);
+            if (check != null) { throw new EntititysNotVaildException("Данный login уже занят"); }
 
             var entity = _mapper.Map<UserDataModel, EntUser>(UserModel);
 
@@ -127,6 +143,7 @@ namespace OrderBoard.AppServices.Users.Services
             modelToDelete.PhoneNumber = null;
             modelToDelete.Email = EmailGenerator.generateEmail(40);
             modelToDelete.Login = loginGenerator.generateLogin(40);
+            modelToDelete.Role = UserRole.Deleted;
             modelToDelete.Password = CryptoHasher.GetBase64Hash(PasswordGenerator.generatePassword(80));
             var entity = _mapper.Map<UserDataModel, EntUser>(modelToDelete);
             await _userRepository.UpdateAsync(entity, cancellationToken);

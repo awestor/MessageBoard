@@ -1,4 +1,6 @@
-﻿namespace OrderBoard.Contracts.Orders
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OrderBoard.Contracts.Orders
 {
     /// <summary>
     /// Модель создания заказа
@@ -8,6 +10,7 @@
         /// <summary>
         /// Id пользователя
         /// </summary>
+        [Required]
         public Guid? UserId { get; set; }
     }
 }

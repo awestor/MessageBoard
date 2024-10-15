@@ -39,7 +39,7 @@ namespace OrderBoard.Api.Controllers
             }
             return Ok(result);
         }
-        [HttpGet("GetAllItem")]
+        [HttpPost("Get all your Item")]
         [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllItem(SearchItemByUserIdRequest request, CancellationToken cancellationToken)
         {
@@ -51,6 +51,12 @@ namespace OrderBoard.Api.Controllers
         public async Task<IActionResult> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
         {
             var result = await _itemService.GetItemWithPaginationAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpPost("Get by name with pagination")]
+        public async Task<IActionResult> GetAllItemByNameAsync(SearchItemByNameRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _itemService.GetAllItemByNameAsync(request, cancellationToken);
             return Ok(result);
         }
 

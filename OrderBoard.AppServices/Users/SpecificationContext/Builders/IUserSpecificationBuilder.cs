@@ -8,5 +8,8 @@ namespace OrderBoard.AppServices.Users.SpecificationContext.Builders
     {
         ISpecification<EntUser> BuildLogin(string? login, string password);
         ISpecification<EntUser> BuildEmail(string? email, string password);
+        ISpecification<EntUser> BuildCheckLogin(string? login);
+        ISpecification<EntUser> BuildCheckEmail(string? email);
+        
     }
 }

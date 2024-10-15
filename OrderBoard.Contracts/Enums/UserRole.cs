@@ -16,6 +16,10 @@
         /// <summary>
         /// Админ
         /// </summary>
-        Admin = 2
+        Admin = 2,
+        /// <summary>
+        /// Удалён
+        /// </summary>
+        Deleted = 3
     }
 }
