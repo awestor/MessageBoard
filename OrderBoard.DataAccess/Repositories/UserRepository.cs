@@ -66,7 +66,12 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<UserDataModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
-
+        public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.Id == id)
+                .ProjectTo<UserInfoModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
 
         public async Task<Guid?> UpdateAsync(EntUser model, CancellationToken cancellationToken)
         {
@@ -86,24 +91,5 @@ namespace OrderBoard.DataAccess.Repositories
             await _repository.DeleteAsync(model, cancellationToken);
             return;
         }
-
-
-
-        //------------------------- Под перенос на спецификацию ----------------------------
-        public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
-        {
-            return _repository.GetAll().Where(s => s.Id == id)
-                .ProjectTo<UserInfoModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
-
-        public Task<UserDataModel> GetByLoginOrEmailAndPasswordAsync(string login, string email, string password, CancellationToken cancellationToken)
-        {
-            return _repository.GetAll().Where(s => (s.Login == login && s.Password == password) || (s.Email == email && s.Password == password))
-                .ProjectTo<UserDataModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
-
-        
     }
 }

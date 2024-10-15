@@ -7,6 +7,7 @@ using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.Orders.Repository;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Other.Exceptions;
+using OrderBoard.AppServices.Other.Generators;
 using OrderBoard.AppServices.Other.Hasher;
 using OrderBoard.AppServices.Other.Validators.Users;
 using OrderBoard.AppServices.Repository.Repository;
@@ -122,7 +123,13 @@ namespace OrderBoard.AppServices.Users.Services
         {
             var modelList = await _itemRepository.GetAllItemAsync(id, cancellationToken);
             await SetNullChildItemAsync(modelList, cancellationToken);
-            await _userRepository.DeleteByIdAsync(id, cancellationToken);
+            var modelToDelete = await _userRepository.GetDataByIdAsync(id, cancellationToken);
+            modelToDelete.PhoneNumber = null;
+            modelToDelete.Email = EmailGenerator.generateEmail(40);
+            modelToDelete.Login = loginGenerator.generateLogin(40);
+            modelToDelete.Password = CryptoHasher.GetBase64Hash(PasswordGenerator.generatePassword(80));
+            var entity = _mapper.Map<UserDataModel, EntUser>(modelToDelete);
+            await _userRepository.UpdateAsync(entity, cancellationToken);
             return;
         }
 
@@ -140,7 +147,6 @@ namespace OrderBoard.AppServices.Users.Services
             foreach (var item in modelList)
             {
                 item.Count = 0;
-                item.UserId = Guid.Empty;
                 var entity = _mapper.Map<ItemDataModel, Item>(item);
                 await _itemRepository.UpdateAsync(entity, cancellationToken);
             }
