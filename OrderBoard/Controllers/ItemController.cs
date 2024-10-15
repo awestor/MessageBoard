@@ -30,6 +30,7 @@ namespace OrderBoard.Api.Controllers
 
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ItemInfoModel), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var result = await _itemService.GetByIdAsync(id, cancellationToken);
@@ -43,17 +44,21 @@ namespace OrderBoard.Api.Controllers
         [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllItem(SearchItemByUserIdRequest request, CancellationToken cancellationToken)
         {
-            var result = await _itemService.GetAllItemAsync(request, cancellationToken) 
+            var result = await _itemService.GetAllItemAsync(request, cancellationToken)
                 ?? throw new EntitiesNotFoundException("Вы не продаёте никаких товаров.");
             return Ok(result);
         }
         [HttpPost("Get with pagination")]
+        [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetItemWithPaginationAsync(SearchItemForPaginationRequest request, CancellationToken cancellationToken)
         {
             var result = await _itemService.GetItemWithPaginationAsync(request, cancellationToken);
             return Ok(result);
         }
         [HttpPost("Get by name with pagination")]
+        [ProducesResponseType(typeof(List<ItemInfoModel>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllItemByNameAsync(SearchItemByNameRequest request, CancellationToken cancellationToken)
         {
             var result = await _itemService.GetAllItemByNameAsync(request, cancellationToken);

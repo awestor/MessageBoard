@@ -12,7 +12,7 @@ namespace OrderBoard.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -23,6 +23,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost("Create category")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Post([FromBody] CategoryCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _categoryService.CreateAsync(model, cancellationToken);

@@ -36,6 +36,13 @@ namespace OrderBoard.AppServices.Orders.Services
         /// <returns></returns>
         Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken);
         /// <summary>
+        /// Удаление заказа по авторизации
+        /// </summary>
+        /// <param name="id">Идентификатор товара</param>
+        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <returns></returns>
+        Task DeleteAuthAsync(CancellationToken cancellationToken);
+        /// <summary>
         /// Удаление заказа по идентификатору
         /// </summary>
         /// <param name="id">Идентификатор товара</param>

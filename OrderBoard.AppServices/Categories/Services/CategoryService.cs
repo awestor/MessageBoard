@@ -95,7 +95,7 @@ namespace OrderBoard.AppServices.Categories.Services
                 (specification, cancellationToken)
                 ?? throw new EntitiesNotFoundException("Категория не найдена или была удалена");
 
-            _structuralLoggingService.PushProperty("SerchRequest", id);
+            _structuralLoggingService.PushProperty("SearchRequest", id);
             _logger.LogInformation("Категория была найдена.");
             return result;
         }
@@ -107,7 +107,7 @@ namespace OrderBoard.AppServices.Categories.Services
                 (specification, cancellationToken)
                 ?? throw new EntitiesNotFoundException("Категория не найдена или была удалена");
 
-            _structuralLoggingService.PushProperty("SerchRequest", name);
+            _structuralLoggingService.PushProperty("SearchRequest", name);
             _logger.LogInformation("Категория была найдена.");
             return result;
         }
@@ -116,7 +116,7 @@ namespace OrderBoard.AppServices.Categories.Services
         {
             var specification = _categorySpecificationBuilder.Build(request);
 
-            _structuralLoggingService.PushProperty("SerchRequest", request);
+            _structuralLoggingService.PushProperty("SearchRequest", request);
             _logger.LogInformation("Список категорий подходящих под спецификацию был отображён.");
             return await _categoryRepository.GetBySpecificationWithPaginationAsync
                 (specification, request.Take, request.Skip, cancellationToken);

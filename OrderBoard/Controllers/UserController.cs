@@ -12,8 +12,8 @@ namespace OrderBoard.Api.Controllers
 {
 
     [ApiController]
-    [Route(template:"[controller]")]
-    public class UserController: ControllerBase
+    [Route(template: "[controller]")]
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         public UserController(IUserService userService)
@@ -22,6 +22,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost("Create new User")]
+        [AllowAnonymous]
         public async Task<IActionResult> Post([FromBody] UserCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _userService.CreateAsync(model, cancellationToken);
@@ -29,6 +30,7 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpGet("{id:guid} Get by Id")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserInfoModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -37,8 +39,8 @@ namespace OrderBoard.Api.Controllers
         }
 
         [HttpPost("{id:guid} Change user role in DB")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SetRole(Guid id, string setRole, CancellationToken cancellationToken)
         { 
 

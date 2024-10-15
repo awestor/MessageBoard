@@ -216,5 +216,16 @@ namespace OrderBoard.AppServices.Orders.Services
             }
             return result;
         }
+
+        public async Task DeleteAuthAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = (claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value)
+                ?? throw new Exception("Авторизуйтесь повторно");
+
+            await DeleteByIdAsync(Guid.Parse(claimId), cancellationToken);
+
+            return;
+        }
     }
 }

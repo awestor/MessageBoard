@@ -36,6 +36,7 @@ namespace OrderBoard.Api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns>id созданного заказа</returns>
         [HttpPost("Create New Order")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] OrderCreateModel model, CancellationToken cancellationToken)
         {
             var result = await _orderService.CreateAsync(model, cancellationToken);
@@ -55,15 +56,16 @@ namespace OrderBoard.Api.Controllers
         /// <returns></returns>
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var result = await _orderService.GetByIdAsync(id, cancellationToken);
             return Ok(result);
         }
 
-
         [HttpPost("GetAllByUserIdAsync")]
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllByUserIdAsync(SearchOrderRequest request, CancellationToken cancellationToken)
         {
             var result = await _orderService.GetOrderWithPaginationAsync(request, cancellationToken);
@@ -71,7 +73,7 @@ namespace OrderBoard.Api.Controllers
         }
         [HttpPost("GetAllYourOrderAsync")]
         [ProducesResponseType(typeof(OrderInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllByIdAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllByUserIdAuthAsync(SearchOrderAuthRequest request, CancellationToken cancellationToken)
         {
             var result = await _orderService.GetOrderWithPaginationAuthAsync(request, cancellationToken);
             return Ok(result);
@@ -102,7 +104,16 @@ namespace OrderBoard.Api.Controllers
 
         [HttpGet("Delete Order")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteOrderAsync(Guid id, CancellationToken cancellationToken)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteOrderAuthAsync(CancellationToken cancellationToken)
+        {
+            await _orderService.DeleteAuthAsync(cancellationToken);
+            return Ok("Заказ был удалён");
+        }
+        [HttpGet("Delete Order by id")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteOrderByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             await _orderService.DeleteByIdAsync(id, cancellationToken);
             return Ok("Заказ был удалён");

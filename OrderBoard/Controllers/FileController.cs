@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderBoard.AppServices.Files.Services;
 using OrderBoard.AppServices.Other.Exceptions;
@@ -9,6 +10,7 @@ namespace OrderBoard.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FileController(IFileService fileService) : ControllerBase
     {
         private readonly IFileService _fileService = fileService;

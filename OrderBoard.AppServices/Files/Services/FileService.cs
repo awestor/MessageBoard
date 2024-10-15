@@ -48,7 +48,7 @@ namespace OrderBoard.AppServices.Files.Services
             var result = await _fileRepository.GetFileByIdAsync(id, cancellationToken)
                 ?? throw new EntitiesNotFoundException("Файл не был найден.");
             
-            _structuralLoggingService.PushProperty("SerchRequest", result);
+            _structuralLoggingService.PushProperty("SearchRequest", result);
             _logger.LogInformation("Файл был отображён.");
             return result;
         }
@@ -57,7 +57,7 @@ namespace OrderBoard.AppServices.Files.Services
         {
             var result = await _fileRepository.GetFileInfoByIdAsync(id, cancellationToken)
                  ?? throw new EntitiesNotFoundException("Файл не был найден.");
-            _structuralLoggingService.PushProperty("SerchInfoRequest", result);
+            _structuralLoggingService.PushProperty("SearchInfoRequest", result);
             _logger.LogInformation("Информация о файле была отображена.");
             return result;
         }

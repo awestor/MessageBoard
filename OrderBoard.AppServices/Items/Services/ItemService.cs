@@ -114,6 +114,8 @@ namespace OrderBoard.AppServices.Items.Services
             var claimsId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
                 ?? throw new Exception("Пожалуйста, авторизируйтесь заново.");
             var specification = _itemSpecificationBuilder.Build(Guid.Parse(claimsId), request);
+            _structuralLoggingService.PushProperty("SearchRequest", request);
+            _logger.LogInformation("Выборка товаров была получена.");
             return await _itemRepository.GetBySpecificationWithPaginationAsync(specification,
                 request.Take, request.Skip, cancellationToken);
         }

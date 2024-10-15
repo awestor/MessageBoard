@@ -7,7 +7,7 @@ namespace OrderBoard.Infrastructure.Services.Logging
     {
         public IDisposable PushProperty(string name, object value)
         {
-            return LogContext.PushProperty(name, value, true);
+            return LogContext.PushProperty(name, value, false);
         }
     }
 }

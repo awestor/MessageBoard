@@ -87,14 +87,14 @@ namespace OrderBoard.AppServices.Users.Services
         public async Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             var result = await _orderItemRepository.GetAllInfoByOrderIdAsync(id, cancellationToken);
-            _structuralLoggingService.PushProperty("SerchRequest", id);
+            _structuralLoggingService.PushProperty("SearchRequest", id);
             _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен");
             return result;
         }
         public Task<List<OrderItemDataModel>> GetAllByOrderIdInDataModelAsync(Guid? id, CancellationToken cancellationToken)
         {
             var result = _orderItemRepository.GetAllDataByOrderIdAsync(id, cancellationToken);
-            _structuralLoggingService.PushProperty("SerchRequest", id);
+            _structuralLoggingService.PushProperty("SearchRequest", id);
             _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен");
             return result;
         }
