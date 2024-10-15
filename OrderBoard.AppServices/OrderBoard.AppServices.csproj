@@ -16,12 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderBoard.Contracts\OrderBoard.Contracts.csproj" />
-    <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
+    <Folder Include="Categories\SpecificationContext\Specifications\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Categories\SpecificationContext\Specifications\" />
+    <ProjectReference Include="..\OrderBoard.Contracts\OrderBoard.Contracts.csproj" />
+    <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
   </ItemGroup>
 
 </Project>
