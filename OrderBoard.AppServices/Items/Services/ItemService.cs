@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Items.SpecificationContext.Builders;
 using OrderBoard.AppServices.Other.Exceptions;
+using OrderBoard.AppServices.Other.Services;
 using OrderBoard.Contracts.Items;
 using OrderBoard.Contracts.Items.Requests;
 using OrderBoard.Domain.Entities;
@@ -18,15 +20,20 @@ namespace OrderBoard.AppServices.Items.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IItemSpecificationBuilder _itemSpecificationBuilder;
+        private readonly IStructuralLoggingService _structuralLoggingService;
+        private readonly ILogger _logger;
 
 
         public ItemService(IItemRepository itemRepository, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IItemSpecificationBuilder itemSpecificationBuilder)
+            IHttpContextAccessor httpContextAccessor, IItemSpecificationBuilder itemSpecificationBuilder,
+            IStructuralLoggingService structuralLoggingService, ILogger logger)
         {
             _itemRepository = itemRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _itemSpecificationBuilder = itemSpecificationBuilder;
+            _structuralLoggingService = structuralLoggingService;
+            _logger = logger;
         }
 
         public Task<Guid?> CreateAsync(ItemCreateModel model, CancellationToken cancellationToken)
@@ -36,6 +43,8 @@ namespace OrderBoard.AppServices.Items.Services
                 ?? throw new Exception("Пожалуйста, авторизируйтесь заново.");
             var entity = _mapper.Map<ItemCreateModel, Item>(model);
             entity.UserId = Guid.Parse(claimId);
+            _structuralLoggingService.PushProperty("CreateRequest", model);
+            _logger.LogInformation("Товар был создан.");
             return _itemRepository.AddAsync(entity, cancellationToken);
         }
         public async Task<Guid?> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
@@ -56,6 +65,8 @@ namespace OrderBoard.AppServices.Items.Services
             if (model.Comment != null) newModel.Comment = model.Comment;
 
             var entity = _mapper.Map<ItemDataModel, Item>(newModel);
+            _structuralLoggingService.PushProperty("UpdateRequest", model);
+            _logger.LogInformation("Товар был обновлён.");
             return await _itemRepository.UpdateAsync(entity, cancellationToken);
         }
         public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
@@ -71,6 +82,8 @@ namespace OrderBoard.AppServices.Items.Services
 
             var entity = _mapper.Map<ItemDataModel, Item>(model);
             await _itemRepository.DeleteAsync(entity, cancellationToken);
+            _structuralLoggingService.PushProperty("DeleteRequest", id);
+            _logger.LogInformation("Товар был удалён.");
             return;
         }
 

@@ -22,6 +22,15 @@ using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
 using OrderBoard.AppServices.Categories.SpecificationContext.Builders;
 using FluentValidation;
 using OrderBoard.AppServices.Users.SpecificationContext.Builders;
+using FluentValidation.AspNetCore;
+using OrderBoard.Infrastructure.Services.Logging;
+using OrderBoard.AppServices.Other.Validators.Categorys;
+using OrderBoard.AppServices.Other.Validators.Items;
+using OrderBoard.AppServices.Other.Validators.ItemValidator;
+using OrderBoard.AppServices.Other.Validators.OrderItems;
+using OrderBoard.AppServices.Other.Validators.Orders;
+using OrderBoard.AppServices.Other.Validators.Users;
+using OrderBoard.AppServices.Other.Services;
 namespace OrderBoard.ComponentRegistrator
 {
     public static class ComponentRegistrator
@@ -55,7 +64,30 @@ namespace OrderBoard.ComponentRegistrator
 
             services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
 
+            services.AddScoped<IStructuralLoggingService, StructuralLoggingService>();
 
+            return services;
+        }
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchCategoryValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateItemValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchItemByNameValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchItemByUserIdValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchItemForPaginationValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateOrderItemValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchOrderItemFromOrderRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchOrderAuthRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<SearchOrderRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
+            services.AddValidatorsFromAssemblyContaining<EmailAuthValidator>();
+            services.AddValidatorsFromAssemblyContaining<LoginAuthValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateUserValidator>();
+            services.AddFluentValidationAutoValidation();
 
             return services;
         }

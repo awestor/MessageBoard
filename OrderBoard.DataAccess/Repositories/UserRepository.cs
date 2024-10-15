@@ -88,7 +88,7 @@ namespace OrderBoard.DataAccess.Repositories
             var model = await _repository.GetAll().Where(s => s.Id == id)
                 .ProjectTo<EntUser>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
-            await _repository.DeleteAsync(model, cancellationToken);
+            if (model != null) { await _repository.DeleteAsync(model, cancellationToken); }
             return;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Items.Services;
@@ -9,6 +10,7 @@ using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Generators;
 using OrderBoard.AppServices.Other.Hasher;
+using OrderBoard.AppServices.Other.Services;
 using OrderBoard.AppServices.Other.Validators.Users;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.AppServices.User.Services;
@@ -35,10 +37,14 @@ namespace OrderBoard.AppServices.Users.Services
         private readonly IMapper _mapper;
         private readonly IItemRepository _itemRepository;
         private readonly IUserSpecificationBuilder _userSpecificationBuilder;
+        private readonly IStructuralLoggingService _structuralLoggingService;
+        private readonly ILogger _logger;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
-            IItemRepository itemRepository, IUserSpecificationBuilder userSpecificationBuilder)
+            IItemRepository itemRepository, IUserSpecificationBuilder userSpecificationBuilder,
+            IStructuralLoggingService structuralLoggingService,
+            ILogger logger)
         { 
             _userRepository = userRepository;
             _mapper = mapper;
@@ -46,6 +52,8 @@ namespace OrderBoard.AppServices.Users.Services
             _httpContextAccessor = httpContextAccessor;
             _itemRepository = itemRepository;
             _userSpecificationBuilder = userSpecificationBuilder;
+            _structuralLoggingService = structuralLoggingService;
+            _logger = logger;
 
         }
 
@@ -62,12 +70,17 @@ namespace OrderBoard.AppServices.Users.Services
 
             var entity = _mapper.Map<UserCreateModel, EntUser>(model);
 
+            _structuralLoggingService.PushProperty("CreateRequest", model);
+            _logger.LogInformation("Пользователь был зарегестрирован.");
             return await _userRepository.AddAsync(entity, cancellationToken);
         }
 
-        public Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
+        public async Task<UserInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            return _userRepository.GetByIdAsync(id, cancellationToken);
+            var result = await _userRepository.GetByIdAsync(id, cancellationToken);
+            _structuralLoggingService.PushProperty("GetRequest", id);
+            _logger.LogInformation("Пользователь был получен.");
+            return result;
         }
         public async Task<Guid?> UpdateAsync(UserUpdateInputModel model, CancellationToken cancellationToken)
         {
@@ -91,6 +104,8 @@ namespace OrderBoard.AppServices.Users.Services
 
             var entity = _mapper.Map<UserDataModel, EntUser>(UserModel);
 
+            _structuralLoggingService.PushProperty("UpdateRequest", model);
+            _logger.LogInformation("Информация о пользователе была изменена.");
             return await _userRepository.UpdateAsync(entity, cancellationToken);
         }
         public async Task<Guid?> SetRoleAsync(Guid? id, string setRole, CancellationToken cancellationToken)
@@ -114,6 +129,9 @@ namespace OrderBoard.AppServices.Users.Services
             model.Role = role;
             var entity = _mapper.Map<UserDataModel, EntUser>(model);
             var result = await _userRepository.UpdateAsync(entity, cancellationToken);
+
+            _structuralLoggingService.PushProperty("SetRequest", id);
+            _logger.LogInformation("Роль пользователя была изменена.");
             return result;
         }
 
@@ -147,6 +165,9 @@ namespace OrderBoard.AppServices.Users.Services
             modelToDelete.Password = CryptoHasher.GetBase64Hash(PasswordGenerator.generatePassword(80));
             var entity = _mapper.Map<UserDataModel, EntUser>(modelToDelete);
             await _userRepository.UpdateAsync(entity, cancellationToken);
+
+            _structuralLoggingService.PushProperty("DeleteRequest", id);
+            _logger.LogInformation("Пользователь был отмечен как удалённый.");
             return;
         }
 
@@ -200,6 +221,9 @@ namespace OrderBoard.AppServices.Users.Services
                 )
             );
             var result = new JwtSecurityTokenHandler().WriteToken(token);
+
+            _structuralLoggingService.PushProperty("AuthRequest", result);
+            _logger.LogInformation("Пользователь был идетефицирован и аудетефицирован.");
             return result.ToString();
         }
 

@@ -8,9 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderBoard.AppServices\OrderBoard.AppServices.csproj" />
     <ProjectReference Include="..\OrderBoard.Domain\OrderBoard.Domain.csproj" />
   </ItemGroup>
 

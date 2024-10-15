@@ -11,6 +11,8 @@ using OrderBoard.AppServices.Orders.SpecificationContext.Builders;
 using OrderBoard.Contracts.Orders.Requests;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.AppServices.Repository.Repository;
+using OrderBoard.AppServices.Other.Services;
+using Microsoft.Extensions.Logging;
 
 namespace OrderBoard.AppServices.Orders.Services
 {
@@ -22,11 +24,15 @@ namespace OrderBoard.AppServices.Orders.Services
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderSpecificationBuilder _orderSpecificationBuilder;
+        private readonly IStructuralLoggingService _structuralLoggingService;
+        private readonly ILogger _logger;
 
         public OrderService(IOrderRepository orderRepository, IMapper mapper,
             IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
             IUserRepository userRepository, IOrderSpecificationBuilder orderSpecificationBuilder,
-            IOrderItemRepository orderItemRepository)
+            IOrderItemRepository orderItemRepository,
+             IStructuralLoggingService structuralLoggingService,
+             ILogger logger)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
@@ -34,6 +40,8 @@ namespace OrderBoard.AppServices.Orders.Services
             _orderSpecificationBuilder = orderSpecificationBuilder;
             _httpContextAccessor = httpContextAccessor;
             _orderItemRepository = orderItemRepository;
+            _structuralLoggingService = structuralLoggingService;
+            _logger = logger;
         }
         /// <summary>
         /// Добавление нового заказа
@@ -52,6 +60,8 @@ namespace OrderBoard.AppServices.Orders.Services
             }
             var entity = _mapper.Map<OrderCreateModel, Order>(model);
 
+            _structuralLoggingService.PushProperty("CreateRequest", model);
+            _logger.LogInformation("Заказ был создан.");
             return await _orderRepository.AddAsync(entity, cancellationToken);
         }
         public async Task<Guid?> CreateByAuthAsync(CancellationToken cancellationToken)
@@ -84,6 +94,9 @@ namespace OrderBoard.AppServices.Orders.Services
         {
             var model = await _orderRepository.GetDataByIdAsync(id, cancellationToken)
             ?? throw new EntitiesNotFoundException("Заказ не найден.");
+
+            _structuralLoggingService.PushProperty("GetRequest", model);
+            _logger.LogInformation("Заказ был получен.");
             var result = await SetTotalInfoAsync(model, id, cancellationToken);
             return result;
         }
@@ -95,6 +108,8 @@ namespace OrderBoard.AppServices.Orders.Services
 
             var entity = _mapper.Map<OrderDataModel, Order>(model);
             await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
+            _structuralLoggingService.PushProperty("DeleteRequest", model);
+            _logger.LogInformation("Заказ был удалён.");
             return;
         }
         public async Task DeleteChildByIdAsync(Guid? id, CancellationToken cancellationToken)
@@ -123,6 +138,8 @@ namespace OrderBoard.AppServices.Orders.Services
             entity.PaidAt = DateTime.UtcNow;
             entity.OrderStatus = Contracts.Enums.OrderStatus.Ordered;
             var result = await _orderRepository.UpdateAsync(entity, cancellationToken);
+            _structuralLoggingService.PushProperty("ConfrimRequest", model);
+            _logger.LogInformation("Заказ был подтверждён и оплачен.");
             return result;
         }
 

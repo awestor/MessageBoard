@@ -52,6 +52,12 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<CategoryInfoModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(cancellationToken);
         }
+        public Task<List<CategoryDataModel>> GetAllChildDataByIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            return _repository.GetAll().Where(s => s.ParentId == id)
+                .ProjectTo<CategoryDataModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+        }
         public Task<CategoryDataModel> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             return _repository.GetAll().Where(s => s.Id == id)

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using OrderBoard.AppServices.Items.Repositories;
 using OrderBoard.AppServices.Items.Services;
 using OrderBoard.AppServices.OrderItems.SpecificationContext.Builders;
 using OrderBoard.AppServices.Orders.Services;
 using OrderBoard.AppServices.Other.Exceptions;
+using OrderBoard.AppServices.Other.Services;
 using OrderBoard.AppServices.Repository.Repository;
 using OrderBoard.AppServices.Repository.Services;
 using OrderBoard.Contracts.Enums;
@@ -26,16 +29,22 @@ namespace OrderBoard.AppServices.Users.Services
         private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
         private readonly IOrderItemSpecificationBuilder _orderItemSpecificationBuilder;
+        private readonly IStructuralLoggingService _structuralLoggingService;
+        private readonly ILogger _logger;
 
-        public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper,
+       public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper,
              IOrderService orderService, IItemService itemService,
-             IOrderItemSpecificationBuilder orderItemSpecificationBuilder)
+             IOrderItemSpecificationBuilder orderItemSpecificationBuilder,
+             IStructuralLoggingService structuralLoggingService,
+             ILogger logger)
         {
             _orderItemRepository = orderItemRepository;
             _mapper = mapper;
             _itemService = itemService;
             _orderService = orderService;
             _orderItemSpecificationBuilder = orderItemSpecificationBuilder;
+            _logger = logger;
+            _structuralLoggingService = structuralLoggingService;
         }
 
         public async Task<Guid?> CreateAsync(OrderItemCreateModel model, CancellationToken cancellationToken)
@@ -58,6 +67,8 @@ namespace OrderBoard.AppServices.Users.Services
                 {
                     modelTwo.Count += model.Count;
                     modelTwo.OrderPrice += model.Count * ItemTempModel.Price;
+                    _structuralLoggingService.PushProperty("CreateRequest", model);
+                    _logger.LogInformation("Полей заказа было создано.");
                     var entity = _mapper.Map<OrderItemDataModel, OrderItem>(modelTwo);
                     return await _orderItemRepository.UpdateAsync(entity, cancellationToken);
                 }
@@ -67,34 +78,37 @@ namespace OrderBoard.AppServices.Users.Services
 
         public async Task<OrderItemInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            var result = await _orderItemRepository.GetInfoByIdAsync(id, cancellationToken);
-            if (result == null)
-            {
-                throw new EntitiesNotFoundException("Поле заказа не найдено.");
-            }
+            var result = await _orderItemRepository.GetInfoByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Поле заказа не найдено.");
+            _structuralLoggingService.PushProperty("GetRequest", result);
+            _logger.LogInformation("полей заказа было найдено.");
             return result;
         }
         public async Task<List<OrderItemInfoModel>> GetAllByOrderIdAsync(Guid? id, CancellationToken cancellationToken)
         {
             var result = await _orderItemRepository.GetAllInfoByOrderIdAsync(id, cancellationToken);
+            _structuralLoggingService.PushProperty("SerchRequest", id);
+            _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен");
             return result;
         }
         public Task<List<OrderItemDataModel>> GetAllByOrderIdInDataModelAsync(Guid? id, CancellationToken cancellationToken)
         {
             var result = _orderItemRepository.GetAllDataByOrderIdAsync(id, cancellationToken);
+            _structuralLoggingService.PushProperty("SerchRequest", id);
+            _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен");
             return result;
         }
         
         public async Task DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
         {
-            var OrderItemTempModel = await _orderItemRepository.GetDataByIdAsync(id, cancellationToken);
-            if (OrderItemTempModel != null)
-            {
-                var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
-                await _orderItemRepository.DeleteAsync(entity, cancellationToken);
-                return;
-            }
-            throw new EntitiesNotFoundException ("Указанного поля заказа не существует или оно было уже удалёно.");
+            var OrderItemTempModel = await _orderItemRepository.GetDataByIdAsync(id, cancellationToken)
+                ?? throw new EntitiesNotFoundException("Указанного поля заказа не существует или оно было уже удалёно.");
+            
+            var entity = _mapper.Map<OrderItemDataModel, OrderItem>(OrderItemTempModel);
+            await _orderItemRepository.DeleteAsync(entity, cancellationToken);
+            _structuralLoggingService.PushProperty("DeleteRequest", entity);
+            _logger.LogInformation("Поле заказа было удалёно");
+            return; 
         }
 
         public async Task DeleteForOrderDeleteAsync(OrderItemDataModel OrderItemTempModel, CancellationToken cancellationToken)
@@ -120,7 +134,8 @@ namespace OrderBoard.AppServices.Users.Services
                 }
                 else
                 {
-                    throw new Exception("Количество товара в заказе больше, чем есть в наличе!");
+                    throw new Exception("Количество товара в поле заказе больше, чем есть в наличе." +
+                        " Пожалуйста убкрите данный товар из заказа или измените количество!");
                 }
             }
             foreach (var item in ItemList)
@@ -138,6 +153,8 @@ namespace OrderBoard.AppServices.Users.Services
             orderItemModel.Count = model.Count;
             var entity = _mapper.Map<OrderItemDataModel, OrderItem>(orderItemModel);
             await _orderItemRepository.UpdateAsync(entity, cancellationToken);
+            _structuralLoggingService.PushProperty("UpdateRequest", entity);
+            _logger.LogInformation("Поле заказа было обновлёно.");
             return;
         }
 
@@ -145,6 +162,8 @@ namespace OrderBoard.AppServices.Users.Services
             CancellationToken cancellationToken)
         {
             var specification = _orderItemSpecificationBuilder.Build(request);
+            _structuralLoggingService.PushProperty("SerchRequest", request);
+            _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен.");
             return _orderItemRepository.GetBySpecificationWithPaginationAsync
                 (specification, request.Take, request.Skip, cancellationToken);
         }

@@ -3,13 +3,28 @@ using System.Net;
 using System.Text.Json;
 using OrderBoard.Contracts.ErrorDto;
 using OrderBoard.AppServices.Other.Exceptions;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http;
+using Serilog.Context;
 
 namespace OrderBoard.Api.Middlewares
 {
-    public class ExceptionHandlingMiddleware(RequestDelegate next)
+    public class ExceptionHandlingMiddleware
     {
-        private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+        {
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All),
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
+        private const string LogTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode}";
+        private readonly RequestDelegate _next;
+
+        public ExceptionHandlingMiddleware(RequestDelegate next)
+        {
+            _next = next ?? throw new ArgumentNullException(nameof(next));
+        }
         /// <summary>
         /// Вызывается для обработки исключений во время работы приложения.
         /// </summary>
@@ -17,7 +32,10 @@ namespace OrderBoard.Api.Middlewares
         /// <param name="environment">Информация о среде окружения приложения.</param>
         /// <param name="serviceProvider">Объект предоставляющий пользовательскую поддержку другим объектам.</param>
         /// <returns>Задача, представляющая собой завершение обработки запроса.</returns>
-        public async Task Invoke(HttpContext context, IHostEnvironment environment, IServiceProvider serviceProvider)
+        public async Task Invoke(HttpContext context
+            , IHostEnvironment environment
+            , IServiceProvider serviceProvider
+            , ILogger<ExceptionHandlingMiddleware> logger)
         {
             try
             {
@@ -25,16 +43,25 @@ namespace OrderBoard.Api.Middlewares
             }
             catch (Exception exception)
             {
+                var statusCode = GetStatusCode(exception);
+
+                using (LogContext.PushProperty("Request.TraceId", context.TraceIdentifier))
+                using (LogContext.PushProperty("Request.UserName", context.User.Identity?.Name ?? string.Empty))
+                using (LogContext.PushProperty("Request.Connection", context.Connection.RemoteIpAddress?.ToString() ?? string.Empty))
+                using (LogContext.PushProperty("Request.DisplayUrl", context.Request.GetDisplayUrl()))
+                {
+                    logger.LogError(exception, LogTemplate,
+                    context.Request.Method,
+                        context.Request.Path.ToString(),
+                        (int)statusCode);
+                }
+
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = GetStatusCode(exception);
+                context.Response.StatusCode = ((int)statusCode);
 
                 var apiError = CreateApiError(exception, context, environment);
-                await context.Response.WriteAsync(JsonSerializer.Serialize(apiError, new JsonSerializerOptions
-                {
-                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(System.Text.Unicode.UnicodeRanges.All),
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                }));
+                
+                await context.Response.WriteAsync(JsonSerializer.Serialize(apiError, JsonSerializerOptions));
             }
         }
 

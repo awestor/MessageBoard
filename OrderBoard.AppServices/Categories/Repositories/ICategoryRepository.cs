@@ -25,6 +25,7 @@ namespace OrderBoard.AppServices.Categories.Repositories
         /// <returns>Модель категории.</returns>
         //Task<CategoryInfoModel> GetByIdAsync(Guid? id, CancellationToken cancellationToken);
         Task<CategoryDataModel> GetDataByIdAsync(Guid? id, CancellationToken cancellationToken);
+        Task<List<CategoryDataModel>> GetAllChildDataByIdAsync(Guid? id, CancellationToken cancellationToken);
         Task UpdateAsync(Category model, CancellationToken cancellationToken);
         Task DeleteByIdAsync(Category model, CancellationToken cancellationToken);
         Task<CategoryInfoModel> GetBySpecificationAsync(ISpecification<Category> specification,

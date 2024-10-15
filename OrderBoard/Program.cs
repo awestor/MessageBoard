@@ -15,6 +15,7 @@ using OrderBoard.AppServices.Other.Validators.Users;
 using OrderBoard.ComponentRegistrator;
 using OrderBoard.Contracts.UserDto;
 using OrderBoard.DataAccess;
+using Serilog;
 using System.Text;
 
 namespace OrderBoard.Api
@@ -84,23 +85,9 @@ namespace OrderBoard.Api
             builder.Services.AddDbContext<OrderBoardDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString")));
             
             builder.Services.AddMvc();
-            builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchCategoryValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<CreateItemValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemByNameValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemByUserIdValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchItemForPaginationValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UpdateItemValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderItemValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderItemValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderItemFromOrderRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderAuthRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SearchOrderRequestValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<CreateUserValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<EmailAuthValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<LoginAuthValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserValidator>();
+            builder.Services.AddFluentValidation();
+
+            
 
             builder.Services.AddFluentValidationAutoValidation();
 
@@ -123,6 +110,13 @@ namespace OrderBoard.Api
                 });
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddAuthorization();
+
+
+            builder.Host.UseSerilog((context, provider, config) =>
+            {
+                config.ReadFrom.Configuration(context.Configuration)
+                    .Enrich.WithEnvironmentName();
+            });
 
             var app = builder.Build();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
