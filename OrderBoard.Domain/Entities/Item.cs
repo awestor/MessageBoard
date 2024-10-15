@@ -2,20 +2,23 @@
 
 namespace OrderBoard.Domain.Entities
 {
+    /// <summary>
+    /// Сущность товара
+    /// </summary>
     public class Item: BaseEntity
     {
         /// <summary>
         /// Имя товара
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Описание товара
         /// </summary>
         public string? Description { get; set; }
         /// <summary>
-        /// Коментарий к товару
+        /// Стоимость товара
         /// </summary>
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         /// <summary>
         /// Коментарий к товару
         /// </summary>
@@ -23,18 +26,30 @@ namespace OrderBoard.Domain.Entities
         /// <summary>
         /// Количество товара
         /// </summary>
-        public int Count { get; set; } 
+        public decimal? Count { get; set; } 
         /// <summary>
         /// Дата создания
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        /// <summary>
+        /// Id категории за которой закреплён товар
+        /// </summary>
+        public Guid? CategoryId { get; set; }
+        /// <summary>
+        /// Категория за которой закреплён товар
+        /// </summary>
+        public Category? Category { get; set; }
         /// <summary>
         /// Id пользователя что создал его
         /// </summary>
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
+        /// <summary>
+        /// Пользователь за которым закреплён товар
+        /// </summary>
+        public EntUser? User { get; set; }
         /// <summary>
         /// Id заказа, за которым закреплён товар
         /// </summary>
-
+        public virtual List<OrderItem>? OrderItem { get; set; }
     }
 }

@@ -1,7 +1,13 @@
 ﻿namespace OrderBoard.Domain.Base
 {
+    /// <summary>
+    /// Базовая сущность
+    /// </summary>
     public class BaseEntity
     {
-        public Guid id { get; set; }
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; set; }
     }
 }

@@ -3,39 +3,34 @@ using OrderBoard.Domain.Base;
 
 namespace OrderBoard.Domain.Entities
 {
+    /// <summary>
+    /// Сущность заказа
+    /// </summary>
     public class Order:BaseEntity
     {
-        /// <summary>
-        /// Описание заказа
-        /// </summary>
-        public string? Description {  get; set; }
         /// <summary>
         /// Дата создания заказа
         /// </summary>
         public DateTime CreatedAt { get; set; }
         /// <summary>
-        /// Количество заказов
+        /// Дата создания заказа
         /// </summary>
-        public int TotalCount { get; set; }
-        /// <summary>
-        /// Итоговая стоимость заказа
-        /// </summary>
-        public decimal TotalPrice { get; set; }
+        public DateTime PaidAt { get; set; }
         /// <summary>
         /// Статус заказа
         /// </summary>
-        public OrderStatus OrderStatus { get; set; } = 0;
+        public OrderStatus? OrderStatus { get; set; } = 0;
         /// <summary>
         /// Id пользователя
         /// </summary>
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
         /// <summary>
         /// Ссылка на пользователя
         /// </summary>
-        public User User { get; set; }
+        public EntUser? User { get; set; }
         /// <summary>
         /// Список заказов
         /// </summary>
-        public List<OrderItem> OrderList { get; set; }
+        public List<OrderItem>? OrderList { get; set; }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace OrderBoard.DbMigrator
 {
@@ -11,9 +7,10 @@ namespace OrderBoard.DbMigrator
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.ConfigurationDbConnection(configuration);
             return services;
         }
-        private static IServiceCollection ConfigurationConnection(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigurationDbConnection(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("ConnectionString");
             services.AddDbContext<MigrationDbContext>(options => options.UseNpgsql(connectionString));
