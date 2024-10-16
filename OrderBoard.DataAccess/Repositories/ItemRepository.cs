@@ -7,6 +7,7 @@ using OrderBoard.Contracts.Items;
 using Microsoft.EntityFrameworkCore;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.AppServices.Other.Specifications;
+using System.Threading;
 
 namespace OrderBoard.DataAccess.Repositories
 {
@@ -81,6 +82,13 @@ namespace OrderBoard.DataAccess.Repositories
                 .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
+            return ItemList;
+        }
+        public async Task<List<ItemDataModel>> GetAllByCategoryIdAsync(Guid? id, CancellationToken cancellationToken)
+        {
+            var ItemList = await _repository.GetAll().Where(s => s.CategoryId == id)
+                .ProjectTo<ItemDataModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
             return ItemList;
         }
     }

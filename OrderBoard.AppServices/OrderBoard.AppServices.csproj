@@ -7,16 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Categories\SpecificationContext\Specifications\**" />
+    <EmbeddedResource Remove="Categories\SpecificationContext\Specifications\**" />
+    <None Remove="Categories\SpecificationContext\Specifications\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Categories\SpecificationContext\Specifications\" />
   </ItemGroup>
 
   <ItemGroup>

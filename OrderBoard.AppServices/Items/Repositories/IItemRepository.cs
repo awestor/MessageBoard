@@ -51,5 +51,6 @@ namespace OrderBoard.AppServices.Items.Repositories
             int take, int? skip, CancellationToken cancellationToken);
         Task<List<ItemInfoModel>> GetBySpecificationAsync(ISpecification<Item> specification,
             CancellationToken cancellationToken);
+        Task<List<ItemDataModel>> GetAllByCategoryIdAsync(Guid? categoryId, CancellationToken cancellationToken);
     }
 }

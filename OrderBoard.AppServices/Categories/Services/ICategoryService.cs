@@ -23,6 +23,6 @@ namespace OrderBoard.AppServices.Categories.Services
         Task<CategoryInfoModel> GetByNameAsync(SearchCategoryByNameRequest? name, CancellationToken cancellationToken);
         Task<List<CategoryInfoModel>> GetAllByRequestAsync(SearchCategoryRequest request, CancellationToken cancellationToken);
         Task<Guid?> UpdateAsync(CategoryDataModel model, CancellationToken cancellationToken);
-        Task DeleteAsync(Guid id, Guid newId, CancellationToken cancellationToken);
+        Task DeleteAsync(DeleteCategoryRequest ids, CancellationToken cancellationToken);
     }
 }

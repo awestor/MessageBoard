@@ -7,8 +7,8 @@ namespace OrderBoard.AppServices.Other.Validators.Users
     {
         public LoginAuthValidator()
         {
-            RuleFor(x => x.Login).NotNull().MinimumLength(6).WithMessage("Некорректный идентефикатор пользователя");
-            RuleFor(x => x.Password).NotNull().MinimumLength(8).WithMessage("Некорректный статус");
+            RuleFor(x => x.Login).NotNull().MinimumLength(6).WithMessage("Некорректный логин или пароль пользователя");
+            RuleFor(x => x.Password).NotNull().MinimumLength(8).WithMessage("Некорректный логин или пароль пользователя");
             return;
         }
     }

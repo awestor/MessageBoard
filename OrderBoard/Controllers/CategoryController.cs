@@ -61,11 +61,11 @@ namespace OrderBoard.Api.Controllers
             var result = await _categoryService.UpdateAsync(model, cancellationToken);
             return Ok(result);
         }
-        [HttpPost("{id:guid}Delete category by Id")]
-        [ProducesResponseType(typeof(CategoryInfoModel), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteById(Guid id, Guid newId, CancellationToken cancellationToken)
+        [HttpPost("Delete category by Id")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteById(DeleteCategoryRequest ids, CancellationToken cancellationToken)
         {
-            await _categoryService.DeleteAsync(id, newId, cancellationToken);
+            await _categoryService.DeleteAsync(ids, cancellationToken);
             return Ok("Категория была удалёна");
         }
     }

@@ -90,7 +90,7 @@ namespace OrderBoard.AppServices.Items.Services
             {
                 foreach (var orderItem in check) 
                 {
-                    orderItem.ItemId = Guid.Empty;
+                    orderItem.ItemId = null;
                     var TOI = _mapper.Map<OrderItemDataModel, OrderItem>(orderItem);
                     await _orderItemRepository.UpdateAsync(TOI,cancellationToken);
                 }

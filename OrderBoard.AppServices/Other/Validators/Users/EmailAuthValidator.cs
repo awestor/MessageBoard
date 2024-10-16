@@ -9,8 +9,8 @@ namespace OrderBoard.AppServices.Other.Validators.Users
     {
         public EmailAuthValidator()
         {
-            RuleFor(x => x.Email).NotNull().EmailAddress().WithMessage("Некорректный e-mail");
-            RuleFor(x => x.Password).NotNull().MinimumLength(8).WithMessage("Некорректный пароль");
+            RuleFor(x => x.Email).NotNull().EmailAddress().WithMessage("Некорректный e-mail или неверный пароль");
+            RuleFor(x => x.Password).NotNull().MinimumLength(8).WithMessage("Некорректный e-mail или неверный пароль");
             return;
         }
     }

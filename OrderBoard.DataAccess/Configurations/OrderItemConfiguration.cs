@@ -10,7 +10,7 @@ namespace OrderBoard.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.ItemId).IsRequired();
+            builder.Property(x => x.ItemId);
             builder.Property(x => x.OrderPrice);
             builder.Property(x => x.OrderId).IsRequired();
             builder.Property(x => x.Count).IsRequired();
