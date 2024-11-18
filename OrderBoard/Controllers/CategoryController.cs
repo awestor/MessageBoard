@@ -22,7 +22,7 @@ namespace OrderBoard.Api.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpPost("Create category")]
+        [HttpPut("Create category")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Post([FromBody] CategoryCreateModel model, CancellationToken cancellationToken)
         {
@@ -61,7 +61,7 @@ namespace OrderBoard.Api.Controllers
             var result = await _categoryService.UpdateAsync(model, cancellationToken);
             return Ok(result);
         }
-        [HttpPost("Delete category by Id")]
+        [HttpDelete("Delete category by Id")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteById(DeleteCategoryRequest ids, CancellationToken cancellationToken)
         {

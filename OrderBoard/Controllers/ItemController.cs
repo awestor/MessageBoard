@@ -65,14 +65,14 @@ namespace OrderBoard.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Update Item")]
+        [HttpPatch("Update Item")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateAsync(ItemUpdateModel model, CancellationToken cancellationToken)
         {
             var result = await _itemService.UpdateAsync(model, cancellationToken);
             return Ok(result + "\n Обновление успешно.");
         }
-        [HttpPost("{id:guid}Delete Item")]
+        [HttpDelete("{id:guid}Delete Item")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {

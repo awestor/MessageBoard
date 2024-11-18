@@ -165,7 +165,7 @@ namespace OrderBoard.AppServices.Users.Services
             _structuralLoggingService.PushProperty("SerchRequest", request);
             _logger.LogInformation("Список полей заказа удовлетворяющиъ запросу был получен.");
             return _orderItemRepository.GetBySpecificationWithPaginationAsync
-                (specification, request.Take, request.Skip, cancellationToken);
+                (specification, request.Take, request.Skip*request.Take, cancellationToken);
         }
     }
 }

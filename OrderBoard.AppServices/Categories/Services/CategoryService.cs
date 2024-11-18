@@ -21,9 +21,6 @@ namespace OrderBoard.AppServices.Categories.Services
         private readonly ILogger<Category> _logger;
         private readonly IStructuralLoggingService _structuralLoggingService;
 
-        /// <summary>
-        /// Инициализировать экземпляр
-        /// </summary>
         public CategoryService(ICategoryRepository categoryRepository, IMapper mapper,
             ICategorySpecificationBuilder categorySpecificationBuilder,
             IItemRepository itemRepository, ILogger<Category> logger,

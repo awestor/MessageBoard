@@ -222,9 +222,16 @@ namespace OrderBoard.AppServices.Orders.Services
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = (claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value)
                 ?? throw new Exception("Авторизуйтесь повторно");
+            var model = await _orderRepository.GetByUserIdAsync(Guid.Parse(claimId), cancellationToken)
+            ?? throw new EntitiesNotFoundException("Заказ не найден");
 
-            await DeleteByIdAsync(Guid.Parse(claimId), cancellationToken);
+            await DeleteChildByIdAsync(model.Id, cancellationToken);
 
+            var entity = _mapper.Map<OrderDataModel, Order>(model);
+            await _orderRepository.DeleteByModelAsync(entity, cancellationToken);
+
+            _structuralLoggingService.PushProperty("DeleteRequest", model);
+            _logger.LogInformation("Заказ был удалён.");
             return;
         }
     }

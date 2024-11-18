@@ -66,7 +66,7 @@ namespace OrderBoard.Api.Controllers
         /// <param name="model"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpPost("Update orderItem")]
+        [HttpPatch("Update orderItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateAsync([FromBody] OrderItemUpdateModel model, CancellationToken cancellationToken)
         {
@@ -79,7 +79,7 @@ namespace OrderBoard.Api.Controllers
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
         /// <returns> id подтверждённого заказа</returns>
-        [HttpPost("{id:guid}Delete orderItem")]
+        [HttpDelete("{id:guid}Delete orderItem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
         {

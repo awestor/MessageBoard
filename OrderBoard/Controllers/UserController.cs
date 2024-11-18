@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using OrderBoard.AppServices.Other.Exceptions;
 using OrderBoard.Contracts.OrderItem;
 using OrderBoard.Contracts.UserDto.Requests;
+using Microsoft.EntityFrameworkCore;
 
 namespace OrderBoard.Api.Controllers
 {
@@ -70,7 +71,7 @@ namespace OrderBoard.Api.Controllers
             var result = await _userService.GetCurrentUserAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.OK, result);
         }
-        [HttpPost("Update User")]
+        [HttpPatch("Update User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateInputModel model, CancellationToken cancellationToken)
@@ -78,7 +79,7 @@ namespace OrderBoard.Api.Controllers
             await _userService.UpdateAsync(model, cancellationToken);
             return StatusCode((int)HttpStatusCode.OK);
         }
-        [HttpPost("Delete User if you Auth")]
+        [HttpDelete("Delete User if you Auth")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
         public async Task<IActionResult> DeleteAuthAsync(CancellationToken cancellationToken)
@@ -86,7 +87,7 @@ namespace OrderBoard.Api.Controllers
             await _userService.DeleteAuthAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.OK);
         }
-        [HttpPost("{id:guid} Delete User by Id if you have Admin role")]
+        [HttpDelete("{id:guid} Delete User by Id if you have Admin role")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteByIdAsync(Guid? id, CancellationToken cancellationToken)
